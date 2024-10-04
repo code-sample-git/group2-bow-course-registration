@@ -1,6 +1,8 @@
 # Getting Started with the group 2 bow course registration app
 
-## Prequest
+## Software Required on dev machine
+Please install git and npm first.
+
 ## Installation
 
 1. Clone the code
