@@ -8,6 +8,8 @@ import Courses from './components/Courses';
 import CourseManagement from './components/CourseManagement';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import Contact from './components/Contact';
+import Login from './components/Login'
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path="/courses" element={<Courses />} />
           <Route path="/coursesmanagement" element={<CourseManagement />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
