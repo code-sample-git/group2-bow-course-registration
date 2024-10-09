@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Programs from './components/Programs';
 import Courses from './components/Courses';
+import CourseManagement from './components/CourseManagement';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/coursesmanagement" element={<CourseManagement />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
