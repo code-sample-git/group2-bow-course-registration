@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 
+
 const Profile = () => {
   const [userDetails, setUserDetails] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -20,14 +21,38 @@ const Profile = () => {
   const [loginData, setLoginData] = useState({ firstName: '', password: '' });
 
   useEffect(() => {
-    // Retrieve data from session storage
-    const userCredentials = sessionStorage.getItem('userCredentials');
-    const loggedInUser = sessionStorage.getItem('loggedInUser');
-    if (userCredentials) {
-      setUserDetails(JSON.parse(userCredentials));
-    }
-    if (loggedInUser) {
-      setLoggedInUser(JSON.parse(loggedInUser));
+    // Check LoginStatus in session storage
+    const loginStatus = sessionStorage.getItem('loginStatus');
+    if (!loginStatus || JSON.parse(loginStatus).status !== 'login') {
+      // Redirect to login page and create loginStatus in session storage
+      sessionStorage.setItem('loginStatus', JSON.stringify({ userID: '123', status: 'login' }));
+      window.location.href = '/login';
+
+    } else {
+      const parsedLoginStatus = JSON.parse(loginStatus);
+      // Retrieve user details from session storage
+      const userCredentials = sessionStorage.getItem('userCredentials');
+      if (userCredentials) {
+        
+        const userDetails = JSON.parse(userCredentials); 
+
+        // Find the corresponding user details with the same userID in userCredentials and save in loggedInUser state
+        const userData = userDetails.find(user => user.userID === Number(parsedLoginStatus.userID));
+        console.log(userDetails
+          .filter((detail) => detail.role === 'Student').map(detail =>(detail.firstName)));
+        
+
+
+        if (userData) {
+          // Save in loggedInUser state and session storage
+          sessionStorage.setItem('loggedInUser', JSON.stringify(userData));
+          setLoggedInUser(userData);
+        } else {
+          window.location.href = '/login'; // Redirect to login if user data is not found
+
+        }
+        setUserDetails(userDetails);
+      }
     }
   }, []);
 
@@ -57,47 +82,19 @@ const Profile = () => {
     setIsEditing(null);
   };
 
-  const handleLoginChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({ ...loginData, [name]: value });
-  };
-
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    const user = userDetails.find(
-      (user) => user.firstName === loginData.firstName && user.password === loginData.password
-    );
-    if (user) {
-      sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-      setLoggedInUser(user);
-    } else {
-      alert('Invalid login credentials');
-    }
-  };
 
   const handleLogout = () => {
+    sessionStorage.setItem('loginStatus', JSON.stringify({ userID: loggedInUser.userID, status: 'logout' }));
     sessionStorage.removeItem('loggedInUser');
     setLoggedInUser(null);
+    window.location.href = '/login';
   };
 
   if (!loggedInUser) {
-    return (
-      <div className="container">
-        <h1>Login</h1>
-        <form onSubmit={handleLoginSubmit}>
-          <label>
-            First Name:
-            <input type="text" name="firstName" value={loginData.firstName} onChange={handleLoginChange} />
-          </label>
-          <label>
-            Password:
-            <input type="password" name="password" value={loginData.password} onChange={handleLoginChange} />
-          </label>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    );
+    return null;
   }
+
+
 
   return (
     <div className="container">
@@ -138,10 +135,11 @@ const Profile = () => {
               </tr>
             </thead>
             <tbody>
+              
               {userDetails
                 .filter((detail) => detail.role === 'Student')
-                .map((detail, index) => (
-                  <tr key={index}>
+                .map((detail) => (
+                  <tr key={detail.index}>
                     <td>{detail.firstName}</td>
                     <td>{detail.lastName}</td>
                     <td>{detail.role}</td>
