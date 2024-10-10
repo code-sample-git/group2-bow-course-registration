@@ -9,7 +9,7 @@ const Profile = () => {
     firstName: '',
     lastName: '',
     password: '',
-    status: '',
+    role: '',
     studentID: '',
     department: '',
     program: '',
@@ -50,7 +50,7 @@ const Profile = () => {
     updatedDetails[isEditing] = editData;
     setUserDetails(updatedDetails);
     sessionStorage.setItem('userCredentials', JSON.stringify(updatedDetails));
-    if (loggedInUser.status === 'student') {
+    if (loggedInUser.role === 'Student') {
       setLoggedInUser(editData); // Update the loggedInUser state only if the logged-in user is a student
       sessionStorage.setItem('loggedInUser', JSON.stringify(editData)); // Update session storage
     }
@@ -101,11 +101,11 @@ const Profile = () => {
 
   return (
     <div className="container">
-      <h1>{loggedInUser.status === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
+      <h1>{loggedInUser.role === 'Admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
       <div>
         <h2>Welcome, {loggedInUser.firstName}</h2>
-        <p>Status: {loggedInUser.status}</p>
-        {loggedInUser.status === 'student' && (
+        <p>Role: {loggedInUser.role}</p>
+        {loggedInUser.role === 'Student' && (
           <>
             <p>Student ID: {loggedInUser.studentID}</p>
             <p>Department: {loggedInUser.department}</p>
@@ -119,7 +119,7 @@ const Profile = () => {
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
-      {loggedInUser.status === 'admin' && (
+      {loggedInUser.role === 'Admin' && (
         <div>
           <h2>All Students</h2>
           <table>
@@ -127,7 +127,7 @@ const Profile = () => {
               <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Status</th>
+                <th>Role</th>
                 <th>Student ID</th>
                 <th>Department</th>
                 <th>Program</th>
@@ -139,12 +139,12 @@ const Profile = () => {
             </thead>
             <tbody>
               {userDetails
-                .filter((detail) => detail.status === 'student')
+                .filter((detail) => detail.role === 'Student')
                 .map((detail, index) => (
                   <tr key={index}>
                     <td>{detail.firstName}</td>
                     <td>{detail.lastName}</td>
-                    <td>{detail.status}</td>
+                    <td>{detail.role}</td>
                     <td>{detail.studentID}</td>
                     <td>{detail.department}</td>
                     <td>{detail.program}</td>
@@ -164,7 +164,7 @@ const Profile = () => {
       {isEditing !== null && (
         <form onSubmit={handleFormSubmit}>
           <h2>Edit User Detail</h2>
-          {loggedInUser.status === 'admin' ? (
+          {loggedInUser.role === 'Admin' ? (
             <>
               <label>
                 First Name:
@@ -194,11 +194,11 @@ const Profile = () => {
                 />
               </label>
               <label>
-                Status:
+                Role:
                 <input
                   type="text"
-                  name="status"
-                  value={editData.status}
+                  name="role"
+                  value={editData.role}
                   onChange={handleInputChange}
                 />
               </label>
