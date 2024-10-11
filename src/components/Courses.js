@@ -20,6 +20,8 @@ const Courses = ({ userRole }) => {
   const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
   const currentUser = userCredentials.find(user => user.userID === parseInt(sessionStorage.getItem('userID')));
 
+  //assign value to userRole
+  
   useEffect(() => {
     // Fetch existing courses from local storage (or you can fetch from an API)
     const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
