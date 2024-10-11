@@ -2,121 +2,88 @@
 .course-container {
     font-family: 'Arial', sans-serif;
     margin: 50px auto;
-    padding: 20px;
-    width: 80%;
     max-width: 800px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  .course-container h1 {
+  h1 {
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
   }
   
   .form-container {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
   
   .input-container {
     margin: 10px 0;
   }
   
-  .input-container label {
+  label {
     display: block;
     margin-bottom: 5px;
-    font-size: 16px;
   }
   
-  .input-container input {
+  input[type='text'],
+  input[type='date'],
+  textarea {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
   
-  .add-course-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+  .add-course-btn,
+  .edit-btn,
+  .delete-btn {
+    background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 10px 15px;
     cursor: pointer;
-    margin-top: 15px;
+    border-radius: 4px;
   }
   
-  .add-course-btn:hover {
-    background-color: #0056b3;
+  .add-course-btn:hover,
+  .edit-btn:hover,
+  .delete-btn:hover {
+    background-color: #218838;
   }
   
   .course-list {
     margin-top: 20px;
   }
   
-  .course-list h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #555;
-  }
-  
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
   }
   
-  table, th, td {
-    border: 1px solid #ddd;
-  }
-  
-  th, td {
-    padding: 12px;
-    text-align: center;
+  th,
+  td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
   }
   
   th {
+    background-color: #f2f2f2;
+  }
+  
+  .selected {
     background-color: #007bff;
     color: white;
   }
   
-  td {
-    background-color: #f9f9f9;
-  }
-  
-  .delete-btn {
-    background-color: #dc3545;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .delete-btn:hover {
-    background-color: #c82333;
-  }
-  
   .error-message {
-    color: #dc3545;
-    margin-top: 10px;
-    font-size: 14px;
+    color: red;
     text-align: center;
   }
   
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .course-container {
-      width: 100%;
-      padding: 15px;
-    }
-  
-    table, th, td {
-      font-size: 14px;
-    }
+  .success-message {
+    color: green;
+    text-align: center;
   }
+  
