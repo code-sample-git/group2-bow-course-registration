@@ -1,20 +1,30 @@
 // src/components/Courses.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Courses.css';
 
 const Courses = ({ userRole }) => {
+  const [courses, setCourses] = useState([]);
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
   const [term, setTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
-  const [courseList, setCourseList] = useState([]);
+  const [editingCourse, setEditingCourse] = useState(null);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingCourse, setEditingCourse] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Load user credentials from session storage
+  const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+  const currentUser = userCredentials.find(user => user.userID === parseInt(sessionStorage.getItem('userID')));
+
+  useEffect(() => {
+    // Fetch existing courses from local storage (or you can fetch from an API)
+    const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
+    setCourses(storedCourses);
+  }, []);
 
   // Function to handle course submission
   const handleSubmit = () => {
@@ -25,7 +35,7 @@ const Courses = ({ userRole }) => {
     }
 
     const newCourse = {
-      id: editingCourse ? editingCourse.id : courseList.length + 1,
+      id: editingCourse ? editingCourse.id : courses.length + 1,
       courseCode,
       courseName,
       term,
@@ -35,12 +45,15 @@ const Courses = ({ userRole }) => {
     };
 
     if (editingCourse) {
-      setCourseList(courseList.map((course) => (course.id === editingCourse.id ? newCourse : course)));
+      setCourses(courses.map((course) => (course.id === editingCourse.id ? newCourse : course)));
       setSuccess('Course updated successfully!');
     } else {
-      setCourseList([...courseList, newCourse]);
+      setCourses([...courses, newCourse]);
       setSuccess('Course added successfully!');
     }
+
+    // Update localStorage with the new or updated courses
+    localStorage.setItem('courses', JSON.stringify(courses));
 
     resetForm();
   };
@@ -58,9 +71,12 @@ const Courses = ({ userRole }) => {
 
   // Function to handle course deletion
   const handleDeleteCourse = (id) => {
-    const updatedList = courseList.filter((course) => course.id !== id);
-    setCourseList(updatedList);
+    const updatedList = courses.filter((course) => course.id !== id);
+    setCourses(updatedList);
     setSuccess('Course deleted successfully!');
+
+    // Update localStorage after deletion
+    localStorage.setItem('courses', JSON.stringify(updatedList));
   };
 
   // Function to reset form fields
@@ -92,13 +108,13 @@ const Courses = ({ userRole }) => {
   // Function to handle search
   const handleSearch = () => {
     if (searchQuery) {
-      return courseList.filter(
+      return courses.filter(
         (course) =>
           course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           course.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    return courseList;
+    return courses;
   };
 
   const filteredCourses = handleSearch();
@@ -115,7 +131,7 @@ const Courses = ({ userRole }) => {
         placeholder="Search courses by name or code"
       />
 
-      {/* Course Form */}
+      {/* Course Form (Only admins can add or edit courses) */}
       {userRole === 'admin' && (
         <div className="form-container">
           <div className="input-container">
@@ -205,3 +221,4 @@ const Courses = ({ userRole }) => {
 };
 
 export default Courses;
+
