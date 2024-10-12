@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import './Courses.css';
 
-const Courses = ({ userRole }) => {
+const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
@@ -18,18 +18,22 @@ const Courses = ({ userRole }) => {
 
   // Load user credentials from session storage
   const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
-  const currentUser = userCredentials.find(user => user.userID === parseInt(sessionStorage.getItem('userID')));
+  const currentUser = userCredentials.find(
+    (user) => user.userID === parseInt(sessionStorage.getItem('userID'))
+  );
 
-  //assign value to userRole
-  
+  const userRole = currentUser?.role; // 'Admin' or 'Student'
+
   useEffect(() => {
-    // Fetch existing courses from local storage (or you can fetch from an API)
+    // Fetch existing courses from local storage
     const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
     setCourses(storedCourses);
   }, []);
 
-  // Function to handle course submission
-  const handleSubmit = () => {
+  // Function to handle course submission (Admin only)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
     if (!courseCode || !courseName || !term || !startDate || !endDate || !description) {
       setError('Please fill in all fields');
       setSuccess('');
@@ -46,21 +50,20 @@ const Courses = ({ userRole }) => {
       description,
     };
 
-    if (editingCourse) {
-      setCourses(courses.map((course) => (course.id === editingCourse.id ? newCourse : course)));
-      setSuccess('Course updated successfully!');
-    } else {
-      setCourses([...courses, newCourse]);
-      setSuccess('Course added successfully!');
-    }
+    const updatedCourses = editingCourse
+      ? courses.map((course) => (course.id === editingCourse.id ? newCourse : course))
+      : [...courses, newCourse];
 
-    // Update localStorage with the new or updated courses
-    localStorage.setItem('courses', JSON.stringify(courses));
+    setCourses(updatedCourses);
+    setSuccess(editingCourse ? 'Course updated successfully!' : 'Course added successfully!');
+
+    // Update localStorage
+    localStorage.setItem('courses', JSON.stringify(updatedCourses));
 
     resetForm();
   };
 
-  // Function to handle course editing
+  // Function to handle course editing (Admin only)
   const handleEditCourse = (course) => {
     setCourseCode(course.courseCode);
     setCourseName(course.courseName);
@@ -71,7 +74,7 @@ const Courses = ({ userRole }) => {
     setEditingCourse(course);
   };
 
-  // Function to handle course deletion
+  // Function to handle course deletion (Admin only)
   const handleDeleteCourse = (id) => {
     const updatedList = courses.filter((course) => course.id !== id);
     setCourses(updatedList);
@@ -134,8 +137,8 @@ const Courses = ({ userRole }) => {
       />
 
       {/* Course Form (Only admins can add or edit courses) */}
-      {userRole === 'admin' && (
-        <div className="form-container">
+      {userRole === 'Admin' && (
+        <form className="form-container" onSubmit={handleSubmit}>
           <div className="input-container">
             <label>Course Code:</label>
             <input type="text" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} />
@@ -160,12 +163,12 @@ const Courses = ({ userRole }) => {
             <label>Description:</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
-          <button onClick={handleSubmit} className="add-course-btn">
+          <button type="submit" className="add-course-btn">
             {editingCourse ? 'Update Course' : 'Add Course'}
           </button>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
-        </div>
+        </form>
       )}
 
       {/* Course List */}
@@ -183,8 +186,8 @@ const Courses = ({ userRole }) => {
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Description</th>
-                {userRole === 'student' && <th>Select</th>}
-                {userRole === 'admin' && <th>Action</th>}
+                {userRole === 'Student' && <th>Select</th>}
+                {userRole === 'Admin' && <th>Action</th>}
               </tr>
             </thead>
             <tbody>
@@ -196,7 +199,7 @@ const Courses = ({ userRole }) => {
                   <td>{course.startDate}</td>
                   <td>{course.endDate}</td>
                   <td>{course.description}</td>
-                  {userRole === 'student' && (
+                  {userRole === 'Student' && (
                     <td>
                       <button
                         onClick={() => handleSelectCourse(course)}
@@ -206,10 +209,14 @@ const Courses = ({ userRole }) => {
                       </button>
                     </td>
                   )}
-                  {userRole === 'admin' && (
+                  {userRole === 'Admin' && (
                     <td>
-                      <button onClick={() => handleEditCourse(course)} className="edit-btn">Edit</button>
-                      <button onClick={() => handleDeleteCourse(course.id)} className="delete-btn">Delete</button>
+                      <button onClick={() => handleEditCourse(course)} className="edit-btn">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteCourse(course.id)} className="delete-btn">
+                        Delete
+                      </button>
                     </td>
                   )}
                 </tr>
@@ -223,4 +230,3 @@ const Courses = ({ userRole }) => {
 };
 
 export default Courses;
-

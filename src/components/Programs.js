@@ -16,7 +16,24 @@ const Program = () => {
     program: '',
     username: '',
     password: '',
+    status: '', // 'student' or 'admin'
   });
+  const [userStatus, setUserStatus] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check for logged-in user credentials and status
+  useEffect(() => {
+    const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+    if (loggedInUser) {
+      const user = userCredentials.find((u) => u.username === loggedInUser.username);
+      if (user) {
+        setUserStatus(user.status);
+        setIsAdmin(user.status === 'admin');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Sample program data
@@ -72,12 +89,35 @@ const Program = () => {
       setIsRegistered(true);
 
       // Save student data to sessionStorage (or use API in real use cases)
-      sessionStorage.setItem('studentData', JSON.stringify({ ...signupData, studentId }));
+      let userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+      userCredentials.push({ ...signupData, studentId });
+      sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
 
-      // Redirect to login or welcome page
+      // Set logged-in user and redirect to login or welcome page
+      sessionStorage.setItem('loggedInUser', JSON.stringify({ username: signupData.username }));
       window.location.href = '/login'; // Redirect to login or welcome page
     } else {
       alert('Please fill out all required fields.');
+    }
+  };
+
+  const handleAdminCourseActions = (action, programId) => {
+    if (isAdmin) {
+      switch (action) {
+        case 'add':
+          // Logic for adding a new program
+          break;
+        case 'edit':
+          // Logic for editing an existing program
+          break;
+        case 'delete':
+          setPrograms(programs.filter((program) => program.id !== programId));
+          break;
+        default:
+          break;
+      }
+    } else {
+      alert('You do not have permission to perform this action.');
     }
   };
 
@@ -97,6 +137,14 @@ const Program = () => {
             <p>Fees: {program.fees}</p>
             <p>Description: {program.description}</p>
             <button onClick={() => handleProgramSelection(program)}>View Details</button>
+
+            {/* Admin-only actions: Add/Edit/Delete */}
+            {isAdmin && (
+              <div className="admin-actions">
+                <button onClick={() => handleAdminCourseActions('edit', program.id)}>Edit</button>
+                <button onClick={() => handleAdminCourseActions('delete', program.id)}>Delete</button>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -179,6 +227,16 @@ const Program = () => {
               onChange={handleSignupInputChange}
               required
             />
+            <select
+              name="status"
+              value={signupData.status}
+              onChange={handleSignupInputChange}
+              required
+            >
+              <option value="">Select Role</option>
+              <option value="student">Student</option>
+              <option value="admin">Admin</option>
+            </select>
             <button type="submit">Sign Up</button>
           </form>
         </div>
