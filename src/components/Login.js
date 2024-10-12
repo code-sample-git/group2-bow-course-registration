@@ -4,29 +4,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
-    const [userID, setUserID] = useState('');
-    const [password, setPassword] = useState(''); 
+    const [role, setRole] = useState('Student');
+    const [userID, setUserID] = useState(''); // Added userID state
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
         const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+        
+        // Trim whitespace from user inputs
+        const trimmedUserID = userID.trim();
+        const trimmedPassword = password.trim();
 
-        // Check if user credentials are available
-        if (userCredentials.length === 0) {
-            alert('No user credentials found. Please sign up first.');
-            return;
-        }
-
-        // Find the user based on userID and password
+        // Find the user based on userID, password, and role
         const user = userCredentials.find(
-            user => user.userID && user.userID.toString() === userID && 
-                    user.password === password
+            user => user.userID.toString() === trimmedUserID && 
+                    user.password === trimmedPassword && 
+                    user.role === role
         );
 
         if (user) {
-            alert(`Login successful as ${user.firstName}`);
+            // Set logged in status
+            sessionStorage.setItem('isLoggedIn', 'true');
+            alert(`Login successful as ${role}`);
             // Redirect to Home page after successful login
             navigate('/'); // Redirects to Home.js
         } else {
@@ -38,24 +40,26 @@ const Login = () => {
         <div className="login-container">
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="User ID"
+                <input 
+                    type="text" 
+                    placeholder="User ID" 
                     value={userID}
-                    onChange={(e) => setUserID(e.target.value)}
-                    required
+                    onChange={(e) => setUserID(e.target.value)} 
+                    required 
                 />
-                <input
-                    type="password"
-                    placeholder="Password"
+                <input 
+                    type="password" 
+                    placeholder="Password" 
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    onChange={(e) => setPassword(e.target.value)} 
+                    required 
                 />
-
+                <select value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="Student">Student</option>
+                    <option value="Admin">Admin</option>
+                </select>
                 <button type="submit">Login</button>
             </form>
-
             <p>Don't have an account? <Link to="/signup">Signup</Link></p>
         </div>
     );
