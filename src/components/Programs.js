@@ -1,3 +1,4 @@
+// src/components/Program.js
 import React, { useState, useEffect } from 'react';
 import './Program.css';
 
@@ -17,8 +18,17 @@ const Program = () => {
     password: '',
     status: '', // 'student' or 'admin'
   });
-  const [userStatus, setUserStatus] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editProgram, setEditProgram] = useState({
+    id: '',
+    name: '',
+    term: '',
+    startDate: '',
+    endDate: '',
+    fees: '',
+    description: '',
+  });
 
   // Check for logged-in user credentials and status
   useEffect(() => {
@@ -28,7 +38,6 @@ const Program = () => {
     if (loggedInUser) {
       const user = userCredentials.find((u) => u.username === loggedInUser.username);
       if (user) {
-        setUserStatus(user.status);
         setIsAdmin(user.status === 'admin');
       }
     }
@@ -103,11 +112,10 @@ const Program = () => {
   const handleAdminCourseActions = (action, programId) => {
     if (isAdmin) {
       switch (action) {
-        case 'add':
-          // Logic for adding a new program
-          break;
         case 'edit':
-          // Logic for editing an existing program
+          const programToEdit = programs.find((program) => program.id === programId);
+          setEditProgram(programToEdit);
+          setIsEditing(true);
           break;
         case 'delete':
           setPrograms(programs.filter((program) => program.id !== programId));
@@ -118,6 +126,30 @@ const Program = () => {
     } else {
       alert('You do not have permission to perform this action.');
     }
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditProgram((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    setPrograms((prevPrograms) =>
+      prevPrograms.map((program) =>
+        program.id === editProgram.id ? { ...program, ...editProgram } : program
+      )
+    );
+    setIsEditing(false);
+    setEditProgram({
+      id: '',
+      name: '',
+      term: '',
+      startDate: '',
+      endDate: '',
+      fees: '',
+      description: '',
+    });
   };
 
   return (
@@ -137,7 +169,7 @@ const Program = () => {
             <p>Description: {program.description}</p>
             <button onClick={() => handleProgramSelection(program)}>View Details</button>
 
-            {/* Admin-only actions: Add/Edit/Delete */}
+            {/* Admin-only actions: Edit/Delete */}
             {isAdmin && (
               <div className="admin-actions">
                 <button onClick={() => handleAdminCourseActions('edit', program.id)}>Edit</button>
@@ -158,6 +190,61 @@ const Program = () => {
           <p><strong>End Date:</strong> {selectedProgram.endDate}</p>
           <p><strong>Fees:</strong> {selectedProgram.fees}</p>
           <p><strong>Description:</strong> {selectedProgram.description}</p>
+        </div>
+      )}
+
+      {/* Edit Program Form */}
+      {isEditing && (
+        <div className="edit-program-container">
+          <h2>Edit Program</h2>
+          <form onSubmit={handleEditSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Program Name"
+              value={editProgram.name}
+              onChange={handleEditInputChange}
+              required
+            />
+            <input
+              type="text"
+              name="term"
+              placeholder="Term"
+              value={editProgram.term}
+              onChange={handleEditInputChange}
+              required
+            />
+            <input
+              type="date"
+              name="startDate"
+              value={editProgram.startDate}
+              onChange={handleEditInputChange}
+              required
+            />
+            <input
+              type="date"
+              name="endDate"
+              value={editProgram.endDate}
+              onChange={handleEditInputChange}
+              required
+            />
+            <input
+              type="text"
+              name="fees"
+              placeholder="Fees"
+              value={editProgram.fees}
+              onChange={handleEditInputChange}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder="Program Description"
+              value={editProgram.description}
+              onChange={handleEditInputChange}
+              required
+            />
+            <button type="submit">Save Changes</button>
+          </form>
         </div>
       )}
 
@@ -192,24 +279,18 @@ const Program = () => {
             <input
               type="tel"
               name="phone"
-              placeholder="Phone"
+              placeholder="Phone Number"
               value={signupData.phone}
               onChange={handleSignupInputChange}
+              required
             />
             <input
               type="date"
               name="birthday"
               value={signupData.birthday}
               onChange={handleSignupInputChange}
+              required
             />
-            <select name="program" value={signupData.program} onChange={handleSignupInputChange} required>
-              <option value="">Select Program</option>
-              {programs.map((program) => (
-                <option key={program.id} value={program.name}>
-                  {program.name}
-                </option>
-              ))}
-            </select>
             <input
               type="text"
               name="username"
@@ -240,6 +321,8 @@ const Program = () => {
           </form>
         </div>
       )}
+
+      {isRegistered && <p>Welcome to the system! You are now registered.</p>}
     </div>
   );
 };
