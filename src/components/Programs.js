@@ -1,4 +1,3 @@
-// src/components/Program.js
 import React, { useState, useEffect } from 'react';
 import './Program.css';
 
@@ -233,7 +232,7 @@ const Program = () => {
               onChange={handleSignupInputChange}
               required
             >
-              <option value="">Select Role</option>
+              <option value="">Select Status</option>
               <option value="student">Student</option>
               <option value="admin">Admin</option>
             </select>
@@ -241,8 +240,6 @@ const Program = () => {
           </form>
         </div>
       )}
-
-      {isRegistered && <p>Thank you for registering! Redirecting to the login page...</p>}
     </div>
   );
 };
