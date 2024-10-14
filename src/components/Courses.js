@@ -1,4 +1,3 @@
-// src/components/Courses.js
 import React, { useEffect, useState } from 'react';
 import './Courses.css';
 
@@ -15,19 +14,18 @@ const Courses = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  // Load user credentials from session storage
-  const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
-  const currentUser = userCredentials.find(
-    (user) => user.userID === parseInt(sessionStorage.getItem('userID'))
-  );
-
-  const userRole = currentUser?.role; // 'Admin' or 'Student'
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
     // Fetch existing courses from local storage
     const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
     setCourses(storedCourses);
+
+    // Fetch user role from session storage
+    const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+    const currentUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const user = userCredentials.find((u) => u.username === currentUser.username);
+    setUserRole(user?.status || '');
   }, []);
 
   // Function to handle course submission (Admin only)
@@ -137,7 +135,7 @@ const Courses = () => {
       />
 
       {/* Course Form (Only admins can add or edit courses) */}
-      {userRole === 'Admin' && (
+      {userRole === 'admin' && (
         <form className="form-container" onSubmit={handleSubmit}>
           <div className="input-container">
             <label>Course Code:</label>
@@ -186,8 +184,8 @@ const Courses = () => {
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Description</th>
-                {userRole === 'Student' && <th>Select</th>}
-                {userRole === 'Admin' && <th>Action</th>}
+                {userRole === 'student' && <th>Select</th>}
+                {userRole === 'admin' && <th>Action</th>}
               </tr>
             </thead>
             <tbody>
@@ -199,7 +197,7 @@ const Courses = () => {
                   <td>{course.startDate}</td>
                   <td>{course.endDate}</td>
                   <td>{course.description}</td>
-                  {userRole === 'Student' && (
+                  {userRole === 'student' && (
                     <td>
                       <button
                         onClick={() => handleSelectCourse(course)}
@@ -209,7 +207,7 @@ const Courses = () => {
                       </button>
                     </td>
                   )}
-                  {userRole === 'Admin' && (
+                  {userRole === 'admin' && (
                     <td>
                       <button onClick={() => handleEditCourse(course)} className="edit-btn">
                         Edit
