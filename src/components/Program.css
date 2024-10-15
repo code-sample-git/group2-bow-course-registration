@@ -61,25 +61,3 @@
   flex-direction: column;
   align-items: center;
 }
-
-.signup-container form input,
-.signup-container form select {
-  padding: 10px;
-  margin: 10px 0;
-  width: 300px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.signup-container form button {
-  padding: 10px 20px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.signup-container form button:hover {
-  background-color: #218838;
-}
-

@@ -45,29 +45,27 @@ const Signup = () => {
             <form onSubmit={handleSubmit}>
                 <input type="text" placeholder="First Name" required />
                 <input type="text" placeholder="Last Name" required />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                 />
-                <input 
-                    type="password" 
-                    placeholder="Confirm Password" 
-                    value={confirmPassword} 
-                    onChange={(e) => setConfirmPassword(e.target.value)} 
-                    required 
+                <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                 />
-                <label>
-                    Birthdate:
-                    <input 
-                        type="date" 
-                        value={birthdate} 
-                        onChange={(e) => setBirthdate(e.target.value)} 
-                        required 
-                    />
-                </label>
+                <input
+                    type="date"
+                    placeholder="Birthdate"
+                    value={birthdate}
+                    onChange={(e) => setBirthdate(e.target.value)}
+                    required
+                />
                 <select value={role} onChange={handleRoleChange}>
                     <option value="Student">Student</option>
                     <option value="Admin">Admin</option>
