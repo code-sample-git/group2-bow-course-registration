@@ -12,7 +12,7 @@ const Login = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+        const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
         
         // Trim whitespace from user inputs
         const trimmedUserID = userID.trim();
@@ -27,7 +27,7 @@ const Login = () => {
 
         if (user) {
             // Set logged in status
-            sessionStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isLoggedIn', 'true');
             alert(`Login successful as ${role}`);
             // Redirect to Home page after successful login
             navigate('/'); // Redirects to Home.js

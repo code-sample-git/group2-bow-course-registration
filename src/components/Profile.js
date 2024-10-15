@@ -22,16 +22,16 @@ const Profile = () => {
 
   useEffect(() => {
     // Check LoginStatus in session storage
-    const loginStatus = sessionStorage.getItem('loginStatus');
+    const loginStatus = localStorage.getItem('loginStatus');
     if (!loginStatus || JSON.parse(loginStatus).status !== 'login') {
       // Redirect to login page and create loginStatus in session storage
-      sessionStorage.setItem('loginStatus', JSON.stringify({ userID: '123', status: 'login' }));
+      localStorage.setItem('loginStatus', JSON.stringify({ userID: '123', status: 'login' }));
       window.location.href = '/login';
 
     } else {
       const parsedLoginStatus = JSON.parse(loginStatus);
       // Retrieve user details from session storage
-      const userCredentials = sessionStorage.getItem('userCredentials');
+      const userCredentials = localStorage.getItem('userCredentials');
       if (userCredentials) {
         
         const userDetails = JSON.parse(userCredentials); 
@@ -45,7 +45,7 @@ const Profile = () => {
 
         if (userData) {
           // Save in loggedInUser state and session storage
-          sessionStorage.setItem('loggedInUser', JSON.stringify(userData));
+          localStorage.setItem('loggedInUser', JSON.stringify(userData));
           setLoggedInUser(userData);
         } else {
           window.location.href = '/login'; // Redirect to login if user data is not found
@@ -74,18 +74,18 @@ const Profile = () => {
     const updatedDetails = [...userDetails];
     updatedDetails[isEditing] = editData;
     setUserDetails(updatedDetails);
-    sessionStorage.setItem('userCredentials', JSON.stringify(updatedDetails));
+    localStorage.setItem('userCredentials', JSON.stringify(updatedDetails));
     if (loggedInUser.role === 'Student') {
       setLoggedInUser(editData); // Update the loggedInUser state only if the logged-in user is a student
-      sessionStorage.setItem('loggedInUser', JSON.stringify(editData)); // Update session storage
+      localStorage.setItem('loggedInUser', JSON.stringify(editData)); // Update session storage
     }
     setIsEditing(null);
   };
 
 
   const handleLogout = () => {
-    sessionStorage.setItem('loginStatus', JSON.stringify({ userID: loggedInUser.userID, status: 'logout' }));
-    sessionStorage.removeItem('loggedInUser');
+    localStorage.setItem('loginStatus', JSON.stringify({ userID: loggedInUser.userID, status: 'logout' }));
+    localStorage.removeItem('loggedInUser');
     setLoggedInUser(null);
     window.location.href = '/login';
   };

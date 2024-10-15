@@ -32,8 +32,8 @@ const Program = () => {
 
   // Check for logged-in user credentials and status
   useEffect(() => {
-    const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
     if (loggedInUser) {
       const user = userCredentials.find((u) => u.username === loggedInUser.username);
@@ -96,13 +96,13 @@ const Program = () => {
       const studentId = Math.floor(1000 + Math.random() * 9000);
       setIsRegistered(true);
 
-      // Save student data to sessionStorage (or use API in real use cases)
-      let userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+      // Save student data to localStorage (or use API in real use cases)
+      let userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
       userCredentials.push({ ...signupData, studentId });
-      sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+      localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
 
       // Set logged-in user and redirect to login or welcome page
-      sessionStorage.setItem('loggedInUser', JSON.stringify({ username: signupData.username }));
+      localStorage.setItem('loggedInUser', JSON.stringify({ username: signupData.username }));
       window.location.href = '/login'; // Redirect to login or welcome page
     } else {
       alert('Please fill out all required fields.');

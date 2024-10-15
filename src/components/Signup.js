@@ -15,7 +15,7 @@ const Signup = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        let userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+        let userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
 
         const firstName = event.target[0].value;
         const lastName = event.target[1].value;
@@ -31,10 +31,10 @@ const Signup = () => {
 
         // Save user data
         userCredentials.push({ firstName, lastName, password, userID, role, birthdate });
-        sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+        localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
 
         // Set logged in status
-        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
 
         alert(`User ${firstName} ${lastName} signed up as ${role} with ID: ${userID}`);
     };

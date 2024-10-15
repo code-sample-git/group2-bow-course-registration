@@ -5,11 +5,11 @@ import './Navbar.css';
 
 const Navbar = () => {
   const handleLogout = () => {
-    sessionStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('isLoggedIn');
     alert("You've been logged out.");
   };
 
-  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
   return (
     <nav>
