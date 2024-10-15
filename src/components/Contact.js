@@ -5,7 +5,7 @@ import './Contact.css';
 
 const Contact = () => {
     const [message, setMessage] = useState('');
-    const [userRole, setUserRole] = useState(() => {
+    const [userRole] = useState(() => {
         // Get the role from session storage
         const userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
         // Check if there are any logged-in users
