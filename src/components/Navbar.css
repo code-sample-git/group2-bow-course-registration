@@ -12,6 +12,11 @@
   align-items: center;
 }
 
+.navbar-logo {
+  height: 40px; /* Adjust the height as needed */
+  margin-right: 10px; /* Space between the logo and the brand name */
+}
+
 .navbar-brand a {
   color: white;
   text-decoration: none;
@@ -53,7 +58,7 @@
     display: none;
     flex-direction: column;
     width: 100%;
-    background-color: #333;
+    background-color: rgba(51, 51, 51, 0.9); /* Slightly transparent background for better readability */
   }
 
   .navbar-menu.open {
@@ -65,7 +70,13 @@
   }
 
   .navbar-menu a {
-    padding: 10px;
+    padding: 15px;
     border-top: 1px solid #444;
+    font-size: 18px; /* Increase font size for better readability */
+    color: white; /* Ensure text color is white for contrast */
+  }
+
+  .navbar-menu a:hover {
+    background-color: #444; /* Add hover effect for better user experience */
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import logo from '../assets/images/bvcLogo.png'; // Import the logo image
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +20,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
+        <img src={logo} alt="Logo" className="navbar-logo" />
         <Link to="/">Bow Course Registration</Link>
         <button className="navbar-toggle" onClick={toggleMenu}>
           &#9776;
