@@ -296,4 +296,4 @@ const Profile = () => {
   );
 };
 
-export default Signup;
+export default Profile;
