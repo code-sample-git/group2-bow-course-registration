@@ -29,14 +29,14 @@ const Login = () => {
         let user
 
         if (student) {
-            //As student is found, use studentID to find user in userCredentials and compare password
+            //As student is found, use studentId to find user in userCredentials and compare password
             user = userCredentials.find((user) => {
-                return user.studentId === student.studentID && user.password === password;
+                return user.userId === student.studentId && user.password === password;
             });
         } else {
             //As user is not found, check username in userCredentials and compare password
             user = userCredentials.find((user) => {
-                return user.username === trimmedUserName && user.password === password;
+                return (user.username === trimmedUserName || user.userId === trimmedUserName)&& user.password === password;
             });
         }
         if (user) {
@@ -44,7 +44,7 @@ const Login = () => {
             localStorage.setItem('isLoggedIn', 'true');
 
             //set loginStatus
-            localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userID: user.studentId, role: user.role }));
+            localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userId: user.userId, role: user.role }));
             // Redirect to Home page after successful login and refresh the navbar
             window.location.href = '/';
         } else {
