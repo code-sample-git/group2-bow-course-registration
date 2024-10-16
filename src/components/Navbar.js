@@ -2,13 +2,19 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/images/bvcLogo.png'; // Import the logo image
+import Modal from './Modal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
-    alert("You've been logged out.");
+    localStorage.removeItem('loginStatus');
+    setModalMessage('Logged out successfully');
+    setIsModalOpen(true);
+    window.location.href = '/';
   };
 
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -17,6 +23,10 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -36,6 +46,7 @@ const Navbar = () => {
         {!isLoggedIn && <li><Link to="/signup">Signup</Link></li>}
         {isLoggedIn && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
       </ul>
+      {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
     </nav>
   );
 };
