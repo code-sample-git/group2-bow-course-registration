@@ -1,11 +1,15 @@
 import React from 'react';
 import './Modal.css'; // Import CSS for styling
 
-const Modal = ({ message, onClose }) => {
+const Modal = ({ isOpen, message, onClose, children }) => {
+
+  if (!isOpen && isOpen !== undefined) return null;
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <p>{message}</p>
+        <div dangerouslySetInnerHTML={{ __html: message }} />
+        {children}
         <button onClick={onClose}>OK</button>
       </div>
     </div>

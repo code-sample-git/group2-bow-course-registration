@@ -1,6 +1,7 @@
 // src/components/Program.js
 import React, { useState, useEffect } from 'react';
 import './Program.css';
+import Modal from './Modal';
 import programData from '../data/programData'; // Import the program data
 
 
@@ -31,6 +32,14 @@ const Program = () => {
     fees: '',
     description: '',
   });
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProgram(null);
+  };
+
   useEffect(() => {
     setPrograms(programData); // Set the program data
   }, []);
@@ -49,6 +58,7 @@ const Program = () => {
 
   const handleProgramSelection = (program) => {
     setSelectedProgram(program);
+    setIsModalOpen(true);
   };
 
   const handleSignupInputChange = (e) => {
@@ -148,17 +158,19 @@ const Program = () => {
       </div>
 
       {/* Program Details */}
-      {selectedProgram && (
-        <div className="program-details">
-          <h2>{selectedProgram.name} - Details</h2>
-          <p><strong>Program Code:</strong> {selectedProgram.code}</p>
-          <p><strong>Term:</strong> {selectedProgram.term}</p>
-          <p><strong>Start Date:</strong> {selectedProgram.startDate}</p>
-          <p><strong>End Date:</strong> {selectedProgram.endDate}</p>
-          <p><strong>Fees:</strong> {selectedProgram.fees}</p>
-          <p><strong>Description:</strong> {selectedProgram.description}</p>
-        </div>
-      )}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {selectedProgram && (
+          <div className="program-details">
+            <h2>{selectedProgram.name} - Details</h2>
+            <p><strong>Program Code:</strong> {selectedProgram.code}</p>
+            <p><strong>Term:</strong> {selectedProgram.term}</p>
+            <p><strong>Start Date:</strong> {selectedProgram.startDate}</p>
+            <p><strong>End Date:</strong> {selectedProgram.endDate}</p>
+            <p><strong>Fees:</strong> {selectedProgram.fees}</p>
+            <p><strong>Description:</strong> {selectedProgram.description}</p>
+          </div>
+        )}
+      </Modal>
 
       {/* Edit Program Form */}
       {isEditing && (
