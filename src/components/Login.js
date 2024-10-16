@@ -23,7 +23,7 @@ const Login = () => {
         //Find the user by searching email, studentId in studentInfo with trimmedUserName
         const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
         let student = studentInfo.find((student) => {
-            return student.email === trimmedUserName || student.studentID === Number(trimmedUserName);
+            return student.email === trimmedUserName || student.studentId === Number(trimmedUserName);
         });
 
         let user
@@ -42,6 +42,9 @@ const Login = () => {
         if (user) {
             // Set logged in status
             localStorage.setItem('isLoggedIn', 'true');
+
+            //set loginStatus
+            localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userID: user.studentId, role: user.role }));
             // Redirect to Home page after successful login
             navigate('/'); // Redirects to Home.js
         } else {
