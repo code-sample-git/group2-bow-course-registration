@@ -5,116 +5,105 @@ import './Profile.css';
 const Profile = () => {
   const [userDetails, setUserDetails] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null);
-  const [isEditing, setIsEditing] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     firstName: '',
     lastName: '',
     password: '',
     role: '',
-    studentID: '',
+    studentId: '',
     department: '',
     program: '',
-    address: '',
     phoneNumber: '',
     personalEmail: ''
   });
-  const [loginData, setLoginData] = useState({ firstName: '', password: '' });
 
   useEffect(() => {
-    // Check LoginStatus in session storage
+    // Check LoginStatus in local storage
     const loginStatus = localStorage.getItem('loginStatus');
-    if (!loginStatus || JSON.parse(loginStatus).status !== 'login') {
+    const parsedLoginStatus = JSON.parse(loginStatus);
+
+    if (!loginStatus || parsedLoginStatus.status !== 'login') {
       window.location.href = '/login';
-
     } else {
-      const parsedLoginStatus = JSON.parse(loginStatus);
-      // Retrieve user details from session storage
-      const userCredentials = localStorage.getItem('userCredentials');
-      if (userCredentials) {
-        
-        const userDetails = JSON.parse(userCredentials); 
+      //get role from loginStatus
+      const role = parsedLoginStatus.role;
 
-        // Find the corresponding user details with the same userID in userCredentials and save in loggedInUser state
-        const userData = userDetails.find(user => user.userID === Number(parsedLoginStatus.userID));
-        console.log(userDetails
-          .filter((detail) => detail.role === 'Student').map(detail =>(detail.firstName)));
-        
-
-
-        if (userData) {
-          // Save in loggedInUser state and session storage
-          localStorage.setItem('loggedInUser', JSON.stringify(userData));
-          setLoggedInUser(userData);
+      if(role === 'student'){
+        //Get student data from local storage by userId
+        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        const student = studentInfo.find((student) => student.studentId === Number(parsedLoginStatus.userId));
+        if (student) {
+          student.role = role;
+          setLoggedInUser(student);
         } else {
-          window.location.href = '/login'; // Redirect to login if user data is not found
-
+          window.location.href = '/login'; // Redirect to login if student data is not found
         }
-        setUserDetails(userDetails);
+      }else if(role === 'admin'){
+        //Get all student data from local storage
+        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        setUserDetails(studentInfo);
+      }else{
+        window.location.href = '/login'; // Redirect to login if role is not found
       }
     }
   }, []);
 
-  const handleEditClick = (firstName, lastName) => {
-    const userIndex = userDetails.findIndex(user => user.firstName === firstName && user.lastName === lastName);
-    if (userIndex !== -1) {
-      setIsEditing(userIndex);
-      setEditData(userDetails[userIndex]);
-    }
+  const handleEditClick = (user) => {
+
+      setIsEditing(true);
+      setEditData(user);
   };
 
   const handleInputChange = (e) => {
+    console.log('e', e);
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const updatedDetails = [...userDetails];
-    updatedDetails[isEditing] = editData;
-    setUserDetails(updatedDetails);
-    localStorage.setItem('userCredentials', JSON.stringify(updatedDetails));
-    if (loggedInUser.role === 'Student') {
-      setLoggedInUser(editData); // Update the loggedInUser state only if the logged-in user is a student
-      localStorage.setItem('loggedInUser', JSON.stringify(editData)); // Update session storage
+    //Update data in local storage
+    if (loggedInUser.role === 'student') {
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+      const index = studentInfo.findIndex((student) => student.studentId === loggedInUser.studentId);
+      studentInfo[index] = editData;
+      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+      setLoggedInUser(editData);
+    } else {
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+      const index = studentInfo.findIndex((student) => student.studentId === editData.studentId);
+      studentInfo[index] = editData;
+      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+      setUserDetails(studentInfo);
     }
-    setIsEditing(null);
-  };
 
-
-  const handleLogout = () => {
-    localStorage.setItem('loginStatus', JSON.stringify({ userID: loggedInUser.userID, status: 'logout' }));
-    localStorage.removeItem('loggedInUser');
-    setLoggedInUser(null);
-    window.location.href = '/login';
+    setIsEditing(false);
   };
 
   if (!loggedInUser) {
     return null;
   }
 
-
-
   return (
     <div className="container">
-      <h1>{loggedInUser.role === 'Admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
+      <h1>{loggedInUser.role === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
       <div>
         <h2>Welcome, {loggedInUser.firstName}</h2>
         <p>Role: {loggedInUser.role}</p>
-        {loggedInUser.role === 'Student' && (
+        {loggedInUser.role === 'student' && (
           <>
-            <p>Student ID: {loggedInUser.studentID}</p>
+            <p>Student ID: {loggedInUser.studentId}</p>
             <p>Department: {loggedInUser.department}</p>
             <p>Program: {loggedInUser.program}</p>
-            <p>Address: {loggedInUser.address}</p>
-            <p>Phone Number: {loggedInUser.phoneNumber}</p>
-            <p>Personal Email: {loggedInUser.personalEmail}</p>
-            <button onClick={() => handleEditClick(loggedInUser.firstName, loggedInUser.lastName)}>Edit</button>
+            <p>Phone: {loggedInUser.phone}</p>
+            <p>Email: {loggedInUser.email}</p>
+            <button onClick={() => handleEditClick(loggedInUser)}>Edit</button>
           </>
         )}
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
-      {loggedInUser.role === 'Admin' && (
+      {loggedInUser.role === 'admin' && (
         <div>
           <h2>All Students</h2>
           <table>
@@ -126,7 +115,6 @@ const Profile = () => {
                 <th>Student ID</th>
                 <th>Department</th>
                 <th>Program</th>
-                <th>Address</th>
                 <th>Phone Number</th>
                 <th>Personal Email</th>
                 <th>Actions</th>
@@ -141,10 +129,9 @@ const Profile = () => {
                     <td>{detail.firstName}</td>
                     <td>{detail.lastName}</td>
                     <td>{detail.role}</td>
-                    <td>{detail.studentID}</td>
+                    <td>{detail.studentId}</td>
                     <td>{detail.department}</td>
                     <td>{detail.program}</td>
-                    <td>{detail.address}</td>
                     <td>{detail.phoneNumber}</td>
                     <td>{detail.personalEmail}</td>
                     <td>
@@ -157,7 +144,7 @@ const Profile = () => {
         </div>
       )}
 
-      {isEditing !== null && (
+      {isEditing && (
         <form onSubmit={handleFormSubmit}>
           <h2>Edit User Detail</h2>
           {loggedInUser.role === 'Admin' ? (
@@ -202,8 +189,8 @@ const Profile = () => {
                 Student ID:
                 <input
                   type="text"
-                  name="studentID"
-                  value={editData.studentID}
+                  name="studentId"
+                  value={editData.studentId}
                   onChange={handleInputChange}
                 />
               </label>
@@ -226,15 +213,6 @@ const Profile = () => {
                 />
               </label>
               <label>
-                Address:
-                <input
-                  type="text"
-                  name="address"
-                  value={editData.address}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
                 Phone Number:
                 <input
                   type="text"
@@ -246,7 +224,7 @@ const Profile = () => {
               <label>
                 Personal Email:
                 <input
-                  type="email"
+                  type="text"
                   name="personalEmail"
                   value={editData.personalEmail}
                   onChange={handleInputChange}
@@ -256,29 +234,11 @@ const Profile = () => {
           ) : (
             <>
               <label>
-                Address:
+                Phone:
                 <input
                   type="text"
-                  name="address"
-                  value={editData.address}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Phone Number:
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={editData.phoneNumber}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Personal Email:
-                <input
-                  type="email"
-                  name="personalEmail"
-                  value={editData.personalEmail}
+                  name="phone"
+                  value={editData.phone}
                   onChange={handleInputChange}
                 />
               </label>

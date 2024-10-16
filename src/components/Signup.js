@@ -110,7 +110,7 @@ const Signup = () => {
     };
     studentInfo.push(student);
     const newUser = {
-      studentId,
+      userId: studentId,
       username,
       password,
       role: role.toLowerCase(),
