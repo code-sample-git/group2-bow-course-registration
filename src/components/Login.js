@@ -45,8 +45,8 @@ const Login = () => {
 
             //set loginStatus
             localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userID: user.studentId, role: user.role }));
-            // Redirect to Home page after successful login
-            navigate('/'); // Redirects to Home.js
+            // Redirect to Home page after successful login and refresh the navbar
+            window.location.href = '/';
         } else {
             localStorage.setItem('isLoggedIn', 'false');
             setModalMessage('Invalid credentials');
