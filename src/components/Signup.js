@@ -31,6 +31,7 @@ const Signup = () => {
       <h1>Signup</h1>
       <p>Already have an account? <Link to="/login">Login</Link></p>
       <form onSubmit={handleSubmit}>
+        <h2>Personal Information</h2>
         <input
           type="text"
           placeholder="First Name"
@@ -66,6 +67,8 @@ const Signup = () => {
           onChange={(e) => setBirthdate(e.target.value)}
           required
         />
+        
+        <h2>Academic Information</h2>
         <select value={department} onChange={(e) => setDepartment(e.target.value)} required>
           <option value="SD">Software Development</option>
         </select>
@@ -77,6 +80,8 @@ const Signup = () => {
             </option>
           ))}
         </select>
+        
+        <h2>Account Information</h2>
         <input
           type="text"
           placeholder="Username"
