@@ -120,7 +120,7 @@ const Signup = () => {
     localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
 
     // Add your form submission logic here
-    setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your username/email/Student ID and password.');
+    setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your Username/Email/Student ID and password.');
     setIsModalOpen(true);
   };
 
