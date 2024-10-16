@@ -37,6 +37,7 @@
   width: 100%;
   border-radius: 5px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .signup-container form button {
