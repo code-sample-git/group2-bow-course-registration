@@ -81,10 +81,10 @@ const Signup = () => {
     }
 
     //Check if any student already exists with the same email or username
-    const existingStudentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-    const existingUserCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-    const emailExists = existingStudentInfo.find((student) => student.email === email);
-    const usernameExists = existingUserCredentials.find((user) => user.username === username);
+    const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+    const emailExists = studentInfo.find((student) => student.email === email);
+    const usernameExists = userCredentials.find((user) => user.username === username);
     if (emailExists) {
       setModalMessage('Email already exists');
       setIsModalOpen(true);
@@ -98,7 +98,7 @@ const Signup = () => {
 
     //All basic validation passed. Create a 6 digit unqiue Student ID. Create the studentInfo in the localstorage. And Create the userCredential in the localstorage.
     const studentId = Math.floor(100000 + Math.random() * 900000);
-    const studentInfo = {
+    const student = {
       studentId,
       firstName,
       lastName,
@@ -109,8 +109,9 @@ const Signup = () => {
       program,
       role,
     };
-    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+    studentInfo.push(student);
     const newUser = {
+      studentId,
       username,
       password,
       status: role.toLowerCase(),
