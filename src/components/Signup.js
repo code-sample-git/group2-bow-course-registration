@@ -107,14 +107,13 @@ const Signup = () => {
       birthday,
       department,
       program,
-      role,
     };
     studentInfo.push(student);
     const newUser = {
       studentId,
       username,
       password,
-      status: role.toLowerCase(),
+      role: role.toLowerCase(),
     };
     userCredentials.push(newUser);
     localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
