@@ -2,65 +2,81 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
+import Modal from './Modal';
 
 const Login = () => {
     const [role, setRole] = useState('Student');
-    const [userID, setUserID] = useState(''); // Added userID state
+    const [userName, setuserName] = useState(''); // Added userName state
     const [password, setPassword] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
         const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-        
+
         // Trim whitespace from user inputs
-        const trimmedUserID = userID.trim();
-        const trimmedPassword = password.trim();
+        const trimmedUserName = userName.trim();
 
-        // Find the user based on userID, password, and role
-        const user = userCredentials.find(
-            user => user.userID.toString() === trimmedUserID && 
-                    user.password === trimmedPassword && 
-                    user.role === role
-        );
+        //Find the user by searching email, studentId in studentInfo with trimmedUserName
+        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        let student = studentInfo.find((student) => {
+            return student.email === trimmedUserName || student.studentID === Number(trimmedUserName);
+        });
 
+        let user
+
+        if (student) {
+            //As student is found, use studentID to find user in userCredentials and compare password
+            user = userCredentials.find((user) => {
+                return user.studentId === student.studentID && user.password === password;
+            });
+        } else {
+            //As user is not found, check username in userCredentials and compare password
+            user = userCredentials.find((user) => {
+                return user.username === trimmedUserName && user.password === password;
+            });
+        }
         if (user) {
             // Set logged in status
             localStorage.setItem('isLoggedIn', 'true');
-            alert(`Login successful as ${role}`);
             // Redirect to Home page after successful login
             navigate('/'); // Redirects to Home.js
         } else {
-            alert('Invalid credentials');
+            localStorage.setItem('isLoggedIn', 'false');
+            setModalMessage('Invalid credentials');
+            setIsModalOpen(true);
         }
     };
 
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
     return (
         <div className="login-container">
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    placeholder="User ID" 
-                    value={userID}
-                    onChange={(e) => setUserID(e.target.value)} 
-                    required 
+                <input
+                    type="text"
+                    placeholder="Username/Email/Student ID"
+                    value={userName}
+                    onChange={(e) => setuserName(e.target.value)}
+                    required
                 />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
+                <input
+                    type="password"
+                    placeholder="Password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
                 />
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="Student">Student</option>
-                    <option value="Admin">Admin</option>
-                </select>
                 <button type="submit">Login</button>
             </form>
             <p>Don't have an account? <Link to="/signup">Signup</Link></p>
+            {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
         </div>
     );
 };
