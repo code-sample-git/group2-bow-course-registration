@@ -5,6 +5,7 @@ import './Signup.css'; // Import the CSS file
 import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './validators';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
+import Modal from './Modal';
 
 
 const Signup = () => {
@@ -20,6 +21,8 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('Student');
   const birthdayRef = useRef(null);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   
   useEffect(() => {
@@ -42,37 +45,48 @@ const Signup = () => {
     e.preventDefault();
     
     if (!validateEmail(email)) {
-      alert('Invalid email format');
+      setModalMessage('Invalid email format');
+      setIsModalOpen(true);
       return;
     }
 
     if (!validatePhone(phone)) {
-      alert('Invalid phone number format. It should be a 10 digit number without spaces or special characters.');
+      setModalMessage('Invalid phone number format. It should be a 10 digit number without spaces or special characters.');
+      setIsModalOpen(true);
       return;
     }
 
     if (!validateName(firstName) || !validateName(lastName)) {
-      alert('Name cannot exceed 255 characters');
+      setModalMessage('Name cannot exceed 255 characters');
+      setIsModalOpen(true);
       return;
     }
 
     if (!validateBirthday(birthday)) {
-      alert('Invalid birthday. Birthday must be between 1900-01-01 and the current date');
+      setModalMessage('Invalid birthday. Birthday must be between 1900-01-01 and the current date');
+      setIsModalOpen(true);
       return;
     }
 
     if (!validatePassword(password)) {
-      alert('Password must be at least 8 characters long and contain upper and lower case letters, and a special character');
+      setModalMessage('Password must be at least 8 characters long and contain upper and lower case letters, and a special character');
+      setIsModalOpen(true);
       return;
     }
 
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setModalMessage('Passwords do not match');
+      setIsModalOpen(true);
       return;
     }
 
     // Add your form submission logic here
-    console.log('Form submitted');
+    setModalMessage('Signup successful');
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -159,6 +173,7 @@ const Signup = () => {
         </select>
         <button id="submit" type="submit">Signup</button>
       </form>
+      {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
   );
 };
