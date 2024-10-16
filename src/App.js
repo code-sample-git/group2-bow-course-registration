@@ -9,6 +9,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Contact from './components/Contact';
 import Login from './components/Login'
+import './App.css';
 
 function App() {
   return (
