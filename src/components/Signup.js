@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import programData from '../data/programData'; // Import the program data
 import './Signup.css'; // Import the CSS file
 import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './validators';
+import Pikaday from 'pikaday';
+import 'pikaday/css/pikaday.css';
 
 
 const Signup = () => {
@@ -10,13 +12,27 @@ const Signup = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [birthday, setbirthday] = useState('');
+  const [birthday, setBirthday] = useState('');
   const [department, setDepartment] = useState('SD');
   const [program, setProgram] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('Student');
+  const birthdayRef = useRef(null);
+
+  
+  useEffect(() => {
+    const picker = new Pikaday({
+      field: birthdayRef.current,
+      format: 'YYYY-MM-DD',
+      onSelect: (date) => {
+        setBirthday(picker.toString('YYYY-MM-DD'));
+      },
+    });
+
+    return () => picker.destroy();
+  }, []);
 
   const handleRoleChange = (e) => {
     setRole(e.target.value);
@@ -94,10 +110,11 @@ const Signup = () => {
           required
         />
         <input
-          type="date"
-          placeholder="birthday"
+          type="text"
+          placeholder="Birthday"
           value={birthday}
-          onChange={(e) => setbirthday(e.target.value)}
+          ref={birthdayRef}
+          onChange={(e) => setBirthday(e.target.value)}
           required
         />
         
