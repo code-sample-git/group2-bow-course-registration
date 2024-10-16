@@ -80,8 +80,47 @@ const Signup = () => {
       return;
     }
 
+    //Check if any student already exists with the same email or username
+    const existingStudentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+    const existingUserCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+    const emailExists = existingStudentInfo.find((student) => student.email === email);
+    const usernameExists = existingUserCredentials.find((user) => user.username === username);
+    if (emailExists) {
+      setModalMessage('Email already exists');
+      setIsModalOpen(true);
+      return;
+    }
+    if (usernameExists) {
+      setModalMessage('Username already exists');
+      setIsModalOpen(true);
+      return;
+    }
+
+    //All basic validation passed. Create a 6 digit unqiue Student ID. Create the studentInfo in the localstorage. And Create the userCredential in the localstorage.
+    const studentId = Math.floor(100000 + Math.random() * 900000);
+    const studentInfo = {
+      studentId,
+      firstName,
+      lastName,
+      email,
+      phone,
+      birthday,
+      department,
+      program,
+      role,
+    };
+    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+    const newUser = {
+      username,
+      password,
+      status: role.toLowerCase(),
+    };
+    userCredentials.push(newUser);
+    localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+    localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+
     // Add your form submission logic here
-    setModalMessage('Signup successful');
+    setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your username/email/Student ID and password.');
     setIsModalOpen(true);
   };
 

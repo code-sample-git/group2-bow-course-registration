@@ -24,8 +24,6 @@ const Profile = () => {
     // Check LoginStatus in session storage
     const loginStatus = localStorage.getItem('loginStatus');
     if (!loginStatus || JSON.parse(loginStatus).status !== 'login') {
-      // Redirect to login page and create loginStatus in session storage
-      localStorage.setItem('loginStatus', JSON.stringify({ userID: '123', status: 'login' }));
       window.location.href = '/login';
 
     } else {
