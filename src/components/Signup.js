@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import programData from '../data/programData'; // Import the program data
 import './Signup.css'; // Import the CSS file
+import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './validators';
+
 
 const Signup = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [birthday, setbirthday] = useState('');
   const [department, setDepartment] = useState('SD');
   const [program, setProgram] = useState('');
   const [username, setUsername] = useState('');
@@ -22,6 +24,37 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!validateEmail(email)) {
+      alert('Invalid email format');
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      alert('Invalid phone number format. It should be a 10 digit number without spaces or special characters.');
+      return;
+    }
+
+    if (!validateName(firstName) || !validateName(lastName)) {
+      alert('Name cannot exceed 255 characters');
+      return;
+    }
+
+    if (!validateBirthday(birthday)) {
+      alert('Invalid birthday. Birthday must be between 1900-01-01 and the current date');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      alert('Password must be at least 8 characters long and contain upper and lower case letters, and a special character');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
     // Add your form submission logic here
     console.log('Form submitted');
   };
@@ -62,9 +95,9 @@ const Signup = () => {
         />
         <input
           type="date"
-          placeholder="Birthdate"
-          value={birthdate}
-          onChange={(e) => setBirthdate(e.target.value)}
+          placeholder="birthday"
+          value={birthday}
+          onChange={(e) => setbirthday(e.target.value)}
           required
         />
         
