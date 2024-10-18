@@ -23,7 +23,7 @@ const Courses = () => {
 
     // Fetch user role from session storage
     const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-    const currentUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    const currentUser = JSON.parse(localStorage.getItem('loginStatus'));
     const user = userCredentials.find((u) => u.username === currentUser.username);
     setUserRole(user?.status || '');
   }, []);
