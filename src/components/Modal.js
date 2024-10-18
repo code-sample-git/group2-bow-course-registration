@@ -1,13 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Modal.css'; // Import CSS for styling
 
 const Modal = ({ isOpen, message, onClose, redirectTo, children }) => {
-  const navigate = useNavigate();
 
   const handleClose = () => {
     if (redirectTo) {
-      navigate(redirectTo);
+      window.location.href = redirectTo;
     }
     onClose();
   };

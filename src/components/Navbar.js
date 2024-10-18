@@ -42,7 +42,7 @@ const Navbar = () => {
   };
 
   useState(() => {
-    const role = JSON.parse(localStorage.getItem('loginStatus')).role;
+    const role = JSON.parse(localStorage.getItem('loginStatus'))?.role;
     setUserRole(role);
   }, []);
 

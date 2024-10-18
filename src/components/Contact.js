@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Contact.css';
+import Modal from './Modal';
 
 const Contact = () => {
   const [user, setUser] = useState(() => {
@@ -17,6 +18,8 @@ const Contact = () => {
   const [messageHistory, setMessageHistory] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [replyMessage, setReplyMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,8 +28,34 @@ const Contact = () => {
     const messageStorage = JSON.parse(localStorage.getItem('messageStorage')) || [];
     // Sort message history by datetime in descending order
     messageStorage.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+    //add submitBy field to messageStorage. Need to look up the user info from the local storage (studentInfo)
+    const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
+    messageStorage.forEach((thread) => {
+        const student = studentInfo.find((student) => student.studentId === thread.from);
+        if(student){
+            thread.submitBy = `${student.firstName} ${student.lastName}`; 
+        }else{
+            thread.submitBy = 'Admin';
+        }
+        //do the same for replies
+        if(thread.replies){
+            thread.replies.forEach((reply) => {
+                const student = studentInfo.find((student) => student.studentId === reply.from);
+                if(student){
+                    reply.from = `${student.firstName} ${student.lastName}`; 
+                }else{
+                    reply.from = 'Admin';
+                }
+            });
+        }
+    });
     setMessageHistory(messageStorage);
   }, []);
+
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -55,6 +84,9 @@ const Contact = () => {
       setMessage('');
       setTitle('');
       setMessageHistory(messageStorage);
+
+      setModalMessage('Form submitted successfully!');
+      setIsModalOpen(true);
     } else if (user.role === 'admin') {
       // Logic for admin to view submitted forms (could be an alert or navigate to another page)
       alert(`Viewing submitted forms...`);
@@ -89,6 +121,9 @@ const Contact = () => {
       setMessageHistory(updatedThreads);
       setReplyMessage('');
       setSelectedThread(null);
+
+      setModalMessage('Reply submitted successfully!');
+      setIsModalOpen(true);
     }
   };
 
@@ -125,7 +160,7 @@ const Contact = () => {
         {messageHistory.map((thread, index) => (
           <div key={index} className="message-thread">
             <h3>{thread.title}</h3>
-            <p><strong>From:</strong> {thread.from}</p>
+            <p><strong>From:</strong> {thread.submitBy}</p>
             <p><strong>Message:</strong> {thread.message}</p>
             <p><strong>Date:</strong> {thread.datetime}</p>
             {thread.replies && thread.replies.map((reply, idx) => (
@@ -153,6 +188,9 @@ const Contact = () => {
             <button type="submit">Submit Reply</button>
           </form>
         </div>
+      )}
+      {isModalOpen && (
+        <Modal message={modalMessage} onClose ={setIsModalOpen} redirectTo={'/contact'} />
       )}
     </div>
   );
