@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css';
-import logo from '../assets/images/bvcLogo.png'; // Import the logo image
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faGraduationCap, faUser, faBook, faCog, faEnvelope, faSignOutAlt, faSignInAlt, faUserGraduate, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
+import logo from '../assets/images/bvcLogo.png'; // Import the logo image
+import './Navbar.css'; // Import your CSS file
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +19,17 @@ const Navbar = () => {
     window.location.href = '/';
   };
 
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
+  const isLoggedIn = loginStatus?.status === 'login' ? true : false;
+  if (isLoggedIn) {
+    if (loginStatus.role === 'student') {
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
+      const student = studentInfo.find((student) => student.studentId === loginStatus.userId);
+      var firstName = student.firstName;
+      var lastName = student.lastName;
+    }
+  }
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -26,7 +38,7 @@ const Navbar = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -37,14 +49,65 @@ const Navbar = () => {
         </button>
       </div>
       <ul className={`navbar-menu ${isOpen ? 'open' : ''}`}>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/programs">Programs</Link></li>
-        <li><Link to="/profile">Profile</Link></li>
-        <li><Link to="/courses">Courses</Link></li>
-        <li><Link to="/coursemanagement">Courses Management</Link></li>
-        <li><Link to="/contact">Contact</Link></li>
-        {!isLoggedIn && <li><Link to="/signup">Signup</Link></li>}
-        {isLoggedIn && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
+        <li>
+          <Link to="/">
+            <FontAwesomeIcon icon={faHome} /> Home
+          </Link>
+        </li>
+        <li>
+          <Link to="/programs">
+            <FontAwesomeIcon icon={faGraduationCap} /> Programs
+          </Link>
+        </li>
+        <li>
+          <Link to="/profile">
+            <FontAwesomeIcon icon={faUser} /> Profile
+          </Link>
+        </li>
+        <li>
+          <Link to="/courses">
+            <FontAwesomeIcon icon={faBook} /> Courses
+          </Link>
+        </li>
+        <li>
+          <Link to="/coursemanagement">
+            <FontAwesomeIcon icon={faCog} /> Courses Management
+          </Link>
+        </li>
+        <li>
+          <Link to="/contact">
+            <FontAwesomeIcon icon={faEnvelope} /> Contact
+          </Link>
+        </li>
+        {!isLoggedIn && (
+          <li>
+            <Link to="/login">
+              <FontAwesomeIcon icon={faSignInAlt} /> Login
+            </Link>
+          </li>
+        )}
+        {!isLoggedIn && (
+          <li>
+            <Link to="/signup">
+              <FontAwesomeIcon icon={faUserPlus} /> Signup
+            </Link>
+          </li>
+        )}
+        {isLoggedIn && (
+          <li>
+            <Link to="/" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+            </Link>
+          </li>
+        )}
+        {isLoggedIn && (
+          <li>
+            <Link to="/profile">
+              <FontAwesomeIcon icon={faUserGraduate} />
+              {firstName} {lastName}
+            </Link>
+          </li>
+        )}
       </ul>
       {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
     </nav>

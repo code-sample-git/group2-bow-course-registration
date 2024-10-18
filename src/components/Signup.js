@@ -14,15 +14,15 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [birthday, setBirthday] = useState('');
-  const [department, setDepartment] = useState('SD');
+  const [department, setDepartment] = useState('Software Development');
   const [program, setProgram] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('Student');
   const birthdayRef = useRef(null);
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [redirectTo, setRedirectTo] = useState('');
 
   
   useEffect(() => {
@@ -36,10 +36,6 @@ const Signup = () => {
 
     return () => picker.destroy();
   }, []);
-
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -113,7 +109,7 @@ const Signup = () => {
       userId: studentId,
       username,
       password,
-      role: role.toLowerCase(),
+      role: 'student',
     };
     userCredentials.push(newUser);
     localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
@@ -121,6 +117,7 @@ const Signup = () => {
 
     // Add your form submission logic here
     setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your Username/Email/Student ID and password.');
+    setRedirectTo('/login');
     setIsModalOpen(true);
   };
 
@@ -173,7 +170,7 @@ const Signup = () => {
         
         <h2>Academic Information</h2>
         <select value={department} onChange={(e) => setDepartment(e.target.value)} required>
-          <option value="SD">Software Development</option>
+          <option value="Software Development">Software Development</option>
         </select>
         <select value={program} onChange={(e) => setProgram(e.target.value)} required>
           <option value="">Select Program</option>
@@ -206,13 +203,9 @@ const Signup = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        <select value={role} onChange={handleRoleChange}>
-          <option value="Student">Student</option>
-          <option value="Admin">Admin</option>
-        </select>
         <button id="submit" type="submit">Signup</button>
       </form>
-      {isModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
+      {isModalOpen && <Modal message={modalMessage} onClose={closeModal} redirectTo={redirectTo} />}
     </div>
   );
 };
