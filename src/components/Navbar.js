@@ -10,13 +10,14 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [redirectTo, setRedirectTo] = useState('');
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('loginStatus');
     setModalMessage('Logged out successfully');
+    setRedirectTo('/');
     setIsModalOpen(true);
-    window.location.href = '/';
   };
 
   const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
@@ -64,21 +65,9 @@ const Navbar = () => {
               <FontAwesomeIcon icon={faGraduationCap} /> Programs
             </Link>
           </li>
-          {!isLoggedIn && (
-            <li>
-              <Link to="/profile">
-                <FontAwesomeIcon icon={faUser} /> Profile
-              </Link>
-            </li>
-          )}
           <li>
             <Link to="/courses">
               <FontAwesomeIcon icon={faBook} /> Courses
-            </Link>
-          </li>
-          <li>
-            <Link to="/contact">
-              <FontAwesomeIcon icon={faEnvelope} /> Contact
             </Link>
           </li>
           {!isLoggedIn && (
@@ -112,7 +101,7 @@ const Navbar = () => {
           )}
         </ul>
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
+      <Modal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} redirectTo={redirectTo} />
     </nav>
   );
 };

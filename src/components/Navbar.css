@@ -36,7 +36,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%;
   background-color: rgba(51, 51, 51, 0.9); /* Slightly transparent background for better readability */
   position: absolute;
   top: 60px;
@@ -60,7 +59,6 @@
 
 .navbar-menu li {
   margin: 0;
-  width: 100%;
 }
 
 .navbar-menu a {
@@ -99,6 +97,7 @@
     flex-direction: row;
     position: static;
     background-color: transparent;
+    width: 800px;
   }
 
   .navbar-menu {
@@ -129,6 +128,7 @@
 
   .navbar-menu-container {
     display: none;
+    width: 100%;
   }
 
   .navbar-menu-container.open {
