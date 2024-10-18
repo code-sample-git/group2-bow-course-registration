@@ -77,11 +77,6 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/coursemanagement">
-              <FontAwesomeIcon icon={faCog} /> Courses Management
-            </Link>
-          </li>
-          <li>
             <Link to="/contact">
               <FontAwesomeIcon icon={faEnvelope} /> Contact
             </Link>

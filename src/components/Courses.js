@@ -22,10 +22,8 @@ const Courses = () => {
     setCourses(storedCourses);
 
     // Fetch user role from session storage
-    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-    const currentUser = JSON.parse(localStorage.getItem('loginStatus'));
-    const user = userCredentials.find((u) => u.username === currentUser.username);
-    setUserRole(user?.status || '');
+    const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
+    setUserRole(loginStatus?.role || '');
   }, []);
 
   // Function to handle course submission (Admin only)
