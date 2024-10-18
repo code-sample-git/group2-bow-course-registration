@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faGraduationCap, faUser, faBook, faCog, faEnvelope, faSignOutAlt, faSignInAlt, faUserGraduate, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faGraduationCap, faUserShield, faBook, faCog, faEnvelope, faSignOutAlt, faSignInAlt, faUserGraduate, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
 import logo from '../assets/images/bvcIcon.png'; // Import the logo image
 import './Navbar.css'; // Import your CSS file
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [redirectTo, setRedirectTo] = useState('');
+  const [userRole, setUserRole] = useState('');
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
@@ -23,7 +24,7 @@ const Navbar = () => {
   const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
   const isLoggedIn = loginStatus?.status === 'login' ? true : false;
   if (isLoggedIn) {
-    if (loginStatus.role === 'student') {
+    if (loginStatus?.role === 'student') {
       const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
       const student = studentInfo.find((student) => student.studentId === loginStatus.userId);
       var firstName = student.firstName;
@@ -39,6 +40,11 @@ const Navbar = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useState(() => {
+    const role = JSON.parse(localStorage.getItem('loginStatus')).role;
+    setUserRole(role);
+  }, []);
 
   return (
     <nav className="navbar">
@@ -70,6 +76,11 @@ const Navbar = () => {
               <FontAwesomeIcon icon={faBook} /> Courses
             </Link>
           </li>
+          <li>
+            <Link to="/contact">
+              <FontAwesomeIcon icon={faEnvelope} /> Contact
+            </Link>
+          </li>
           {!isLoggedIn && (
             <li>
               <Link to="/login">
@@ -84,11 +95,19 @@ const Navbar = () => {
               </Link>
             </li>
           )}
-          {isLoggedIn && (
+          {isLoggedIn && userRole === 'student' && (
             <li>
               <Link to="/profile">
                 <FontAwesomeIcon icon={faUserGraduate} />
-                {firstName} {lastName}
+                {firstName} {lastName} 
+              </Link>
+            </li>
+          )}
+          {isLoggedIn && userRole === 'admin' && (
+            <li>
+              <Link to="/">
+                <FontAwesomeIcon icon={faUserShield} />
+                Admin
               </Link>
             </li>
           )}
