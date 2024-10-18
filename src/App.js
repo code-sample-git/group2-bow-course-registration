@@ -11,6 +11,10 @@ import Contact from './components/Contact';
 import Login from './components/Login'
 import NotFound from './components/NotFound';
 import './App.css';
+import createDummyData from './components/createDummyData';
+
+//run the createDummyData function to create dummy data.
+createDummyData();
 
 function App() {
   return (
