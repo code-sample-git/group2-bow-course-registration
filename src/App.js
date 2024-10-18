@@ -9,6 +9,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Contact from './components/Contact';
 import Login from './components/Login'
+import NotFound from './components/NotFound';
 import './App.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
