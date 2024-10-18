@@ -7,17 +7,14 @@ export default function createDummyData() {
     const adminData = require('../data/adminData').default;
 
     //Check if the data already exists in the local storage.
-    if (!localStorage.getItem('courseData')) {
-        localStorage.setItem('courseData', JSON.stringify(courseData));
+    if (!localStorage.getItem('courses')) {
+        localStorage.setItem('courses', JSON.stringify(courseData));
     }
 
     const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-    console.log('userCredentials', userCredentials);
 
     //find if the id already exists in the userCredentials.
     const admin = userCredentials.find((user) => user.userId === adminData[0].adminId);
-
-    console.log('admin', admin);
 
     if (!admin) {
         //prepare the data and store it in the local storage.
