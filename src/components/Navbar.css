@@ -1,5 +1,5 @@
-/* Navbar.css */
 .navbar {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,11 +10,7 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-}
-
-.navbar-logo {
-  height: 40px; /* Adjust the height as needed */
-  margin-right: 10px; /* Space between the logo and the brand name */
+  width: 100%;
 }
 
 .navbar-brand a {
@@ -22,32 +18,59 @@
   text-decoration: none;
   font-size: 24px;
 }
+.navbar-logo {
+  height: 40px;
+  margin-right: 10px;
+}
 
 .navbar-toggle {
   display: none;
-  font-size: 24px;
-  color: white;
   background: none;
   border: none;
+  color: white;
+  font-size: 24px;
   cursor: pointer;
-  margin-left: auto; /* Push the toggle button to the right */
+}
+
+.navbar-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  background-color: rgba(51, 51, 51, 0.9); /* Slightly transparent background for better readability */
+  position: absolute;
+  top: 60px;
+  left: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.navbar-menu-container.open {
+  display: flex;
 }
 
 .navbar-menu {
   display: flex;
+  flex-direction: column;
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 .navbar-menu li {
-  margin: 0 10px;
+  margin: 0;
+  width: 100%;
 }
 
 .navbar-menu a {
   color: white;
   text-decoration: none;
-  padding: 10px;
+  padding: 15px;
+  border-top: 1px solid #444;
+  font-size: 18px; /* Increase font size for better readability */
+  width: 100%;
+  display: block;
 }
 
 .navbar-hi-message {
@@ -58,34 +81,58 @@
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
-  .navbar-toggle {
-    display: block;
+.navbar-brand-left {
+  display: flex;
+  align-items: left;
+  width: 100%;
+}
+
+.navbar-brand-right {
+  display: flex;
+  align-items: right;
+  width: 200px;
+}
+
+@media (min-width: 769px) {
+  .navbar-menu-container {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    background-color: transparent;
   }
 
   .navbar-menu {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background-color: rgba(51, 51, 51, 0.9); /* Slightly transparent background for better readability */
-  }
-
-  .navbar-menu.open {
-    display: flex;
+    flex-direction: row;
   }
 
   .navbar-menu li {
-    margin: 0;
+    margin: 0 10px;
   }
 
   .navbar-menu a {
-    padding: 15px;
-    border-top: 1px solid #444;
-    font-size: 18px; /* Increase font size for better readability */
-    color: white; /* Ensure text color is white for contrast */
+    padding: 10px;
+    border-top: none;
+    font-size: 16px;
   }
 
-  .navbar-menu a:hover {
-    background-color: #444; /* Add hover effect for better user experience */
+  .navbar-toggle {
+    display: none;
   }
+}
+
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: block;
+    /* Align the button to the right */
+    margin-left: auto;
+  }
+
+  .navbar-menu-container {
+    display: none;
+  }
+
+  .navbar-menu-container.open {
+    display: flex;
+  }
+
 }
