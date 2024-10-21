@@ -2,17 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Contact.css';
 import Modal from './Modal';
+import { getLoggedInUser } from './functionLib'; // Import the utility function
 
 const Contact = () => {
-  const [user, setUser] = useState(() => {
-    const user = JSON.parse(localStorage.getItem('loginStatus'));
-    // Ensure the user is logged in
-    if (!user || user.status !== 'login') {
-      return '';
-    }
-    return user;
-  });
-
+  const [user, setUser] = useState(getLoggedInUser); // Use the utility function
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [messageHistory, setMessageHistory] = useState([]);

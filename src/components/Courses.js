@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Courses.css';
+import { getLoggedInUser } from './functionLib'; // Import the utility function
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -15,6 +16,7 @@ const Courses = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [userRole, setUserRole] = useState('');
+  const [user, setUser] = useState(getLoggedInUser); // Use the utility function
 
   useEffect(() => {
     // Fetch existing courses from local storage
@@ -22,9 +24,8 @@ const Courses = () => {
     setCourses(storedCourses);
 
     // Fetch user role from session storage
-    const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
-    setUserRole(loginStatus?.role || '');
-  }, []);
+    setUserRole(user?.role || '');
+  }, [user]);
 
   // Function to handle course submission (Admin only)
   const handleSubmit = (event) => {

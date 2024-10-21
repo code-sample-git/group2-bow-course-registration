@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
+import { getLoggedInUser } from './functionLib'; // Import the utility function
 
 
 const Profile = () => {
   const [userDetails, setUserDetails] = useState([]);
+  const [user, setUser] = useState(getLoggedInUser); // Use the utility function
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
@@ -19,20 +21,16 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    // Check LoginStatus in local storage
-    const loginStatus = localStorage.getItem('loginStatus');
-    const parsedLoginStatus = JSON.parse(loginStatus);
-
-    if (!loginStatus || parsedLoginStatus.status !== 'login') {
+    if (!user || user.status !== 'login') {
       window.location.href = '/login';
     } else {
       //get role from loginStatus
-      const role = parsedLoginStatus.role;
+      const role = user.role;
 
       if(role === 'student'){
         //Get student data from local storage by userId
         const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-        const student = studentInfo.find((student) => student.studentId === Number(parsedLoginStatus.userId));
+        const student = studentInfo.find((student) => student.studentId === Number(user.userId));
         if (student) {
           student.role = role;
           setLoggedInUser(student);

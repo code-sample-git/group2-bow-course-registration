@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import programData from '../data/programData'; // Import the program data
 import './Signup.css'; // Import the CSS file
-import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './validators';
+import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './functionLib';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import Modal from './Modal';

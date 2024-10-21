@@ -24,3 +24,12 @@ export const validatePassword = (password) => {
   const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,255}$/;
   return re.test(password);
 };
+
+export const getLoggedInUser = () => {
+  const user = JSON.parse(localStorage.getItem('loginStatus'));
+  // Ensure the user is logged in
+  if (!user || user.status !== 'login') {
+    return '';
+  }
+  return user;
+};
