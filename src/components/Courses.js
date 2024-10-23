@@ -124,6 +124,7 @@ const Courses = () => {
 
   const handleTermSelection = (e) => {
     const selectedTerm = e.target.value;
+    const courses =  JSON.parse(localStorage.getItem('courses')) || [];
     const filteredCourses = courses.filter((course) => course.term === selectedTerm);
     setCourses(filteredCourses);
   };
@@ -134,13 +135,6 @@ const Courses = () => {
     <div className="course-container">
       <h1>Course Management</h1>
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search courses by name or code"
-      />
       {/*Term Selection*/}
       <select onChange={handleTermSelection}>
         <option value="Fall">Fall</option>
@@ -148,6 +142,13 @@ const Courses = () => {
         <option value="Spring">Spring</option>
         <option value="Summer">Summer</option>
       </select>
+      {/* Search Bar */}
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search courses by name or code"
+      />
 
       {/* Course Form (Only admins can add or edit courses) */}
       {userRole === 'admin' && (
@@ -190,7 +191,7 @@ const Courses = () => {
 
       {/* Course List */}
       <div className="course-list">
-        <h2>Available Courses</h2>
+        <h2>Courses</h2>
         {filteredCourses.length === 0 ? (
           <p>No courses available. Please add courses.</p>
         ) : (

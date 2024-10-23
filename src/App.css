@@ -14,12 +14,14 @@ h3{
 
 input[type='text'],
 input[type='date'],
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 textarea {
