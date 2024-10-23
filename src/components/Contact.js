@@ -17,33 +17,38 @@ const Contact = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch message history from localStorage
-    const messageStorage = JSON.parse(localStorage.getItem('messageStorage')) || [];
-    // Sort message history by datetime in descending order
-    messageStorage.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
-    //add submitBy field to messageStorage. Need to look up the user info from the local storage (studentInfo)
-    const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
-    messageStorage.forEach((thread) => {
+    if (!user || user.status !== 'login') {
+      window.location.href = '/login';
+    } else {
+      // Fetch message history from localStorage
+      const messageStorage = JSON.parse(localStorage.getItem('messageStorage')) || [];
+      // Sort message history by datetime in descending order
+      messageStorage.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+      //add submitBy field to messageStorage. Need to look up the user info from the local storage (studentInfo)
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
+      messageStorage.forEach((thread) => {
         const student = studentInfo.find((student) => student.studentId === thread.from);
-        if(student){
-            thread.submitBy = `${student.firstName} ${student.lastName}`; 
-        }else{
-            thread.submitBy = 'Admin';
+        if (student) {
+          thread.submitBy = `${student.firstName} ${student.lastName}`;
+        } else {
+          thread.submitBy = 'Admin';
         }
         //do the same for replies
-        if(thread.replies){
-            thread.replies.forEach((reply) => {
-                const student = studentInfo.find((student) => student.studentId === reply.from);
-                if(student){
-                    reply.from = `${student.firstName} ${student.lastName}`; 
-                }else{
-                    reply.from = 'Admin';
-                }
-            });
+        if (thread.replies) {
+          thread.replies.forEach((reply) => {
+            const student = studentInfo.find((student) => student.studentId === reply.from);
+            if (student) {
+              reply.from = `${student.firstName} ${student.lastName}`;
+            } else {
+              reply.from = 'Admin';
+            }
+          });
         }
-    });
-    setMessageHistory(messageStorage);
-  }, []);
+      });
+      setMessageHistory(messageStorage);
+
+    }
+  }, [user]);
 
 
   const closeModal = () => {
@@ -183,7 +188,7 @@ const Contact = () => {
         </div>
       )}
       {isModalOpen && (
-        <Modal message={modalMessage} onClose ={setIsModalOpen} redirectTo={'/contact'} />
+        <Modal message={modalMessage} onClose={setIsModalOpen} redirectTo={'/contact'} />
       )}
     </div>
   );

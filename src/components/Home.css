@@ -1,0 +1,53 @@
+/* src/components/Home.css */
+
+.home-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.guest-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.guest-container h1 {
+  color: #333;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.guest-container p {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.guest-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.guest-container a:hover {
+  text-decoration: underline;
+}
+
+.guest-container h2 {
+  color: #333;
+  font-size: 1.8em;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.guest-container ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.guest-container ul li {
+  margin-bottom: 10px;
+  color: #555;
+}
