@@ -7,6 +7,7 @@ const Courses = () => {
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
   const [term, setTerm] = useState('');
+  const [year, setYear] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
@@ -65,6 +66,7 @@ const Courses = () => {
     setCourseCode(course.courseCode);
     setCourseName(course.courseName);
     setTerm(course.term);
+    setYear(course.year);
     setStartDate(course.startDate);
     setEndDate(course.endDate);
     setDescription(course.description);
@@ -86,6 +88,7 @@ const Courses = () => {
     setCourseCode('');
     setCourseName('');
     setTerm('');
+    setYear('');
     setStartDate('');
     setEndDate('');
     setDescription('');
@@ -119,6 +122,12 @@ const Courses = () => {
     return courses;
   };
 
+  const handleTermSelection = (e) => {
+    const selectedTerm = e.target.value;
+    const filteredCourses = courses.filter((course) => course.term === selectedTerm);
+    setCourses(filteredCourses);
+  };
+
   const filteredCourses = handleSearch();
 
   return (
@@ -132,6 +141,13 @@ const Courses = () => {
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search courses by name or code"
       />
+      {/*Term Selection*/}
+      <select onChange={handleTermSelection}>
+        <option value="Fall">Fall</option>
+        <option value="Winter">Winter</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+      </select>
 
       {/* Course Form (Only admins can add or edit courses) */}
       {userRole === 'admin' && (
@@ -147,6 +163,10 @@ const Courses = () => {
           <div className="input-container">
             <label>Term:</label>
             <input type="text" value={term} onChange={(e) => setTerm(e.target.value)} />
+          </div>
+          <div className="input-container">
+            <label>Year:</label>
+            <input type="text" value={year} onChange={(e) => setYear(e.target.value)} />
           </div>
           <div className="input-container">
             <label>Start Date:</label>
