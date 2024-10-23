@@ -3,7 +3,7 @@ import React from 'react';
 const Signup = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
-        let userCredentials = JSON.parse(sessionStorage.getItem('userCredentials')) || [];
+        let userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
 
         const firstName = event.target[0].value;
         const lastName = event.target[1].value;
@@ -11,7 +11,7 @@ const Signup = () => {
         const status = event.target[3].value; // 'admin' or 'student'
 
         userCredentials.push({ firstName, lastName, password, status });
-        sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+        localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
     };
 
     return (
