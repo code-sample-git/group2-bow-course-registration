@@ -21,7 +21,6 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    console.log('user', user);
     if (!user || user.status !== 'login') {
       window.location.href = '/login';
     } else {
