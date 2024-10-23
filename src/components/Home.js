@@ -10,10 +10,7 @@ const Home = () => {
 
   return (
     <div>
-      {user.role === 'admin' && (
-        <h1>Welcome Admin!</h1>
-      )}
-      {user.role === 'student' && (
+      {(user.role === 'student' || user.role === 'admin') && (
         <div>
           <Profile user={user} />
         </div>

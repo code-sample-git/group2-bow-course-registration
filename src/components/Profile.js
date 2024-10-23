@@ -21,6 +21,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    console.log('user', user);
     if (!user || user.status !== 'login') {
       window.location.href = '/login';
     } else {
@@ -41,6 +42,7 @@ const Profile = () => {
         //Get all student data from local storage
         const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
         setUserDetails(studentInfo);
+        setLoggedInUser(user);
       }else{
         window.location.href = '/login'; // Redirect to login if role is not found
       }
@@ -87,7 +89,7 @@ const Profile = () => {
     <div className="container">
       <h1>{loggedInUser.role === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
       <div>
-        <h2>Welcome, {loggedInUser.firstName}</h2>
+        <h2>Welcome, {loggedInUser.firstName || 'Admin'}</h2>
         <p>Role: {loggedInUser.role}</p>
         {loggedInUser.role === 'student' && (
           <>
@@ -109,7 +111,6 @@ const Profile = () => {
               <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Role</th>
                 <th>Student ID</th>
                 <th>Department</th>
                 <th>Program</th>
@@ -121,19 +122,17 @@ const Profile = () => {
             <tbody>
               
               {userDetails
-                .filter((detail) => detail.role === 'Student')
                 .map((detail) => (
                   <tr key={detail.index}>
                     <td>{detail.firstName}</td>
                     <td>{detail.lastName}</td>
-                    <td>{detail.role}</td>
                     <td>{detail.studentId}</td>
                     <td>{detail.department}</td>
                     <td>{detail.program}</td>
-                    <td>{detail.phoneNumber}</td>
-                    <td>{detail.personalEmail}</td>
+                    <td>{detail.phone}</td>
+                    <td>{detail.email}</td>
                     <td>
-                      <button onClick={() => handleEditClick(detail.firstName, detail.lastName)}>Edit</button>
+                      <button onClick={() => handleEditClick(detail)}>Edit</button>
                     </td>
                   </tr>
                 ))}
@@ -145,7 +144,7 @@ const Profile = () => {
       {isEditing && (
         <form onSubmit={handleFormSubmit}>
           <h2>Edit User Detail</h2>
-          {loggedInUser.role === 'Admin' ? (
+          {loggedInUser.role === 'admin' ? (
             <>
               <label>
                 First Name:
@@ -171,15 +170,6 @@ const Profile = () => {
                   type="password"
                   name="password"
                   value={editData.password}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Role:
-                <input
-                  type="text"
-                  name="role"
-                  value={editData.role}
                   onChange={handleInputChange}
                 />
               </label>
@@ -215,7 +205,7 @@ const Profile = () => {
                 <input
                   type="text"
                   name="phoneNumber"
-                  value={editData.phoneNumber}
+                  value={editData.phone}
                   onChange={handleInputChange}
                 />
               </label>
@@ -224,7 +214,7 @@ const Profile = () => {
                 <input
                   type="text"
                   name="personalEmail"
-                  value={editData.personalEmail}
+                  value={editData.email}
                   onChange={handleInputChange}
                 />
               </label>
