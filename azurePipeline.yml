@@ -1,0 +1,36 @@
+# azure-pipelines.yml
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureSubscription: '5fb31437-6450-4901-987c-e533f1952b36'
+  resourceGroupName: 'bvc'
+  storageAccountName: 'sodv2201'
+  buildDir: 'build'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build React app'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(azureSubscription)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Enable static website hosting
+      az storage blob service-properties update --account-name $(storageAccountName) --static-website --index-document index.html --404-document index.html
+
+      # Upload files
+      az storage blob upload-batch -d '$web' -s $(buildDir) --account-name $(storageAccountName)
+  displayName: 'Deploy to Azure Storage'
