@@ -1,0 +1,58 @@
+/* Contact.css */
+.contact-container {
+  padding: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+.message-history {
+  margin-top: 20px;
+}
+
+.message-thread, .message-reply {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.message-thread h3 {
+  margin-top: 0;
+}
+
+.message-thread p, .message-reply p {
+  margin: 5px 0;
+}
+
+.message-reply {
+  margin-left: 20px;
+  background-color: #e9e9e9;
+}
+
+.reply-container {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.reply-container h3 {
+  margin-top: 0;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

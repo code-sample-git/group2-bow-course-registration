@@ -1,14 +1,27 @@
 // src/components/Home.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getLoggedInUser } from './functionLib'; // Import the utility function
+import Profile from './Profile';
+
 
 const Home = () => {
+  const [user, setUser] = useState(getLoggedInUser); // Use the utility function
+
+
   return (
     <div>
-      <h1>Welcome to Bow Course Registration. Fuck you</h1>
-      <p>Select a program or course to get started.</p>
+      {(user.role === 'student' || user.role === 'admin') && (
+        <div>
+          <Profile user={user} />
+        </div>
+      )}
+      {!user?.role && (
+        <h1>Welcome Guest!</h1>
+      )}
     </div>
   );
 };
 
 export default Home;
+//testing
  

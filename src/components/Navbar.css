@@ -1,22 +1,138 @@
-/* src/components/Navbar.css */
-nav {
-    background-color: #282c34;
-    padding: 1em;
-  }
-  
-  nav ul {
+.navbar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-brand a {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+}
+.navbar-logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.navbar-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: rgba(51, 51, 51, 0.9); /* Slightly transparent background for better readability */
+  position: absolute;
+  top: 60px;
+  left: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.navbar-menu-container.open {
+  display: flex;
+}
+
+.navbar-menu {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.navbar-menu li {
+  margin: 0;
+}
+
+.navbar-menu a {
+  color: white;
+  text-decoration: none;
+  padding: 15px;
+  border-top: 1px solid #444;
+  font-size: 18px; /* Increase font size for better readability */
+  width: 100%;
+  display: block;
+}
+
+.navbar-hi-message {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.navbar-brand-left {
+  display: flex;
+  align-items: left;
+  width: 100%;
+}
+
+.navbar-brand-right {
+  display: flex;
+  align-items: right;
+  width: 200px;
+}
+
+@media (min-width: 769px) {
+  .navbar-menu-container {
     display: flex;
-    list-style: none;
-    justify-content: space-around;
+    flex-direction: row;
+    position: static;
+    background-color: transparent;
+    width: 1200px;
   }
-  
-  nav ul li {
+
+  .navbar-menu {
+    flex-direction: row;
+  }
+
+  .navbar-menu li {
     margin: 0 10px;
   }
-  
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
+
+  .navbar-menu a {
+    padding: 10px;
+    border-top: none;
+    font-size: 16px;
   }
-  
+
+  .navbar-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: block;
+    /* Align the button to the right */
+    margin-left: auto;
+  }
+
+  .navbar-menu-container {
+    display: none;
+    width: 100%;
+  }
+
+  .navbar-menu-container.open {
+    display: flex;
+  }
+
+}

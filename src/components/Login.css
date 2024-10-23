@@ -29,6 +29,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 .login-container button {
@@ -41,6 +42,7 @@
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
+    box-sizing: border-box;
 }
 
 .login-container button:hover {

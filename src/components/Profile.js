@@ -1,99 +1,241 @@
 import React, { useEffect, useState } from 'react';
+import './Profile.css';
+import { getLoggedInUser } from './functionLib'; // Import the utility function
+
 
 const Profile = () => {
-  const [studentLoginDetails, setStudentLoginDetails] = useState([]);
-  const [isEditing, setIsEditing] = useState(null);
-  const [editData, setEditData] = useState({ firstName: '', lastName: '', password: '' });
+  const [userDetails, setUserDetails] = useState([]);
+  const [user, setUser] = useState(getLoggedInUser); // Use the utility function
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    firstName: '',
+    lastName: '',
+    password: '',
+    role: '',
+    studentId: '',
+    department: '',
+    program: '',
+    phoneNumber: '',
+    personalEmail: ''
+  });
 
   useEffect(() => {
-    // Retrieve data from session storage
-    const userCredentials = sessionStorage.getItem('userCredentials');
-    if (userCredentials) {
-      // Parse the JSON string to an array
-      setStudentLoginDetails(JSON.parse(userCredentials));
+    console.log('user', user);
+    if (!user || user.status !== 'login') {
+      window.location.href = '/login';
+    } else {
+      //get role from loginStatus
+      const role = user.role;
+
+      if(role === 'student'){
+        //Get student data from local storage by userId
+        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        const student = studentInfo.find((student) => student.studentId === Number(user.userId));
+        if (student) {
+          student.role = role;
+          setLoggedInUser(student);
+        } else {
+          window.location.href = '/login'; // Redirect to login if student data is not found
+        }
+      }else if(role === 'admin'){
+        //Get all student data from local storage
+        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        setUserDetails(studentInfo);
+        setLoggedInUser(user);
+      }else{
+        window.location.href = '/login'; // Redirect to login if role is not found
+      }
     }
   }, []);
 
-  const handleEditClick = (index) => {
-    setIsEditing(index);
-    setEditData(studentLoginDetails[index]);
+  const handleEditClick = (user) => {
+
+      setIsEditing(true);
+      setEditData(user);
   };
 
   const handleInputChange = (e) => {
+    console.log('e', e);
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const updatedDetails = [...studentLoginDetails];
-    updatedDetails[isEditing] = editData;
-    setStudentLoginDetails(updatedDetails);
-    sessionStorage.setItem('userCredentials', JSON.stringify(updatedDetails));
-    setIsEditing(null);
+    //Update data in local storage
+    if (loggedInUser.role === 'student') {
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+      const index = studentInfo.findIndex((student) => student.studentId === loggedInUser.studentId);
+      studentInfo[index] = editData;
+      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+      setLoggedInUser(editData);
+    } else {
+      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+      const index = studentInfo.findIndex((student) => student.studentId === editData.studentId);
+      studentInfo[index] = editData;
+      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+      setUserDetails(studentInfo);
+    }
+
+    setIsEditing(false);
   };
 
-  return (
-    <div>
-      <h1>Student Login Details</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Password</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {studentLoginDetails.map((detail, index) => (
-            <tr key={index}>
-              <td>{detail.firstName}</td>
-              <td>{detail.lastName}</td>
-              <td>{detail.password}</td>
-              <td>
-                <button onClick={() => handleEditClick(index)}>Edit</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  if (!loggedInUser) {
+    return null;
+  }
 
-      {isEditing !== null && (
+  return (
+    <div className="container">
+      <h1>{loggedInUser.role === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}</h1>
+      <div>
+        <h2>Welcome, {loggedInUser.firstName || 'Admin'}</h2>
+        <p>Role: {loggedInUser.role}</p>
+        {loggedInUser.role === 'student' && (
+          <>
+            <p>Student ID: {loggedInUser.studentId}</p>
+            <p>Department: {loggedInUser.department}</p>
+            <p>Program: {loggedInUser.program}</p>
+            <p>Phone: {loggedInUser.phone}</p>
+            <p>Email: {loggedInUser.email}</p>
+            <button onClick={() => handleEditClick(loggedInUser)}>Edit</button>
+          </>
+        )}
+      </div>
+
+      {loggedInUser.role === 'admin' && (
+        <div>
+          <h2>All Students</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Student ID</th>
+                <th>Department</th>
+                <th>Program</th>
+                <th>Phone Number</th>
+                <th>Personal Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {userDetails
+                .map((detail) => (
+                  <tr key={detail.index}>
+                    <td>{detail.firstName}</td>
+                    <td>{detail.lastName}</td>
+                    <td>{detail.studentId}</td>
+                    <td>{detail.department}</td>
+                    <td>{detail.program}</td>
+                    <td>{detail.phone}</td>
+                    <td>{detail.email}</td>
+                    <td>
+                      <button onClick={() => handleEditClick(detail)}>Edit</button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {isEditing && (
         <form onSubmit={handleFormSubmit}>
-          <h2>Edit Student Login Detail</h2>
-          <label>
-            First Name:
-            <input
-              type="text"
-              name="firstName"
-              value={editData.firstName}
-              onChange={handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Last Name:
-            <input
-              type="text"
-              name="lastName"
-              value={editData.lastName}
-              onChange={handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={editData.password}
-              onChange={handleInputChange}
-            />
-          </label>
-          <br />
-          <button type="submit">Save</button>
-          <button type="button" onClick={() => setIsEditing(null)}>Cancel</button>
+          <h2>Edit User Detail</h2>
+          {loggedInUser.role === 'admin' ? (
+            <>
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="firstName"
+                  value={editData.firstName}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lastName"
+                  value={editData.lastName}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Password:
+                <input
+                  type="password"
+                  name="password"
+                  value={editData.password}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Student ID:
+                <input
+                  type="text"
+                  name="studentId"
+                  value={editData.studentId}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Department:
+                <input
+                  type="text"
+                  name="department"
+                  value={editData.department}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Program:
+                <input
+                  type="text"
+                  name="program"
+                  value={editData.program}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Phone Number:
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={editData.phone}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Personal Email:
+                <input
+                  type="text"
+                  name="personalEmail"
+                  value={editData.email}
+                  onChange={handleInputChange}
+                />
+              </label>
+            </>
+          ) : (
+            <>
+              <label>
+                Phone:
+                <input
+                  type="text"
+                  name="phone"
+                  value={editData.phone}
+                  onChange={handleInputChange}
+                />
+              </label>
+            </>
+          )}
+          <div className="actions">
+            <button type="submit">Save</button>
+            <button type="button" onClick={() => setIsEditing(null)}>Cancel</button>
+          </div>
         </form>
       )}
     </div>
