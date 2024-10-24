@@ -47,7 +47,7 @@ const Signup = () => {
     }
 
     if (!validatePhone(phone)) {
-      setModalMessage('Invalid phone number format. It should be a 10 digit number without spaces or special characters.');
+      setModalMessage('Invalid phone number format. It should be a 10 digit canadian phone number without spaces or special characters.');
       setIsModalOpen(true);
       return;
     }
