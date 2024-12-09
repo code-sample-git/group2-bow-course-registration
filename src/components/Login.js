@@ -5,53 +5,85 @@ import './Login.css';
 import Modal from './Modal';
 
 const Login = () => {
-    const [role, setRole] = useState('Student');
+    // const [role, setRole] = useState('Student');
     const [userName, setuserName] = useState(''); // Added userName state
     const [password, setPassword] = useState('');
     const [modalMessage, setModalMessage] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+        const loginData = {
+            username: userName.trim(),
+            password: password
+        };
 
-        // Trim whitespace from user inputs
-        const trimmedUserName = userName.trim();
-
-        //Find the user by searching email, studentId in studentInfo with trimmedUserName
-        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-        let student = studentInfo.find((student) => {
-            return student.email === trimmedUserName || student.studentId === Number(trimmedUserName);
-        });
-
-        let user
-
-        if (student) {
-            //As student is found, use studentId to find user in userCredentials and compare password
-            user = userCredentials.find((user) => {
-                return user.userId === student.studentId && user.password === password;
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
             });
-        } else {
-            //As user is not found, check username in userCredentials and compare password
-            user = userCredentials.find((user) => {
-                return (user.username === trimmedUserName || user.userId === trimmedUserName)&& user.password === password;
-            });
-        }
-        if (user) {
-            // Set logged in status
-            localStorage.setItem('isLoggedIn', 'true');
 
-            //set loginStatus
-            localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userId: user.userId, role: user.role }));
-            // Redirect to Home page after successful login and refresh the navbar
-            window.location.href = '/';
-        } else {
-            localStorage.setItem('isLoggedIn', 'false');
-            setModalMessage('Invalid credentials');
+            const data = await response.json();
+
+            if (response.status === 200) {
+                // Store the JWT token in localStorage or sessionStorage
+                localStorage.setItem('token', data.token);
+                alert('Login successful!');
+                navigate('/');
+            } else {
+                setModalMessage(data.message || 'Invalid credentials');
+                setIsModalOpen(true);
+            }
+        } catch (error) {
+            setModalMessage('Error logging in. Please try again.');
             setIsModalOpen(true);
         }
+
+        // const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+
+        // // Trim whitespace from user inputs
+        // const trimmedUserName = userName.trim();
+
+        // //Find the user by searching email, studentId in studentInfo with trimmedUserName
+        // const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+        // let student = studentInfo.find((student) => {
+        //     return student.email === trimmedUserName || student.studentId === Number(trimmedUserName);
+        // });
+
+        // let user
+
+        // if (student) {
+        //     //As student is found, use studentId to find user in userCredentials and compare password
+        //     user = userCredentials.find((user) => {
+        //         return user.userId === student.studentId && user.password === password;
+        //     });
+        // } else {
+        //     //As user is not found, check username in userCredentials and compare password
+        //     user = userCredentials.find((user) => {
+        //         return (user.username === trimmedUserName || user.userId === trimmedUserName)&& user.password === password;
+        //     });
+        // }
+        // if (user) {
+        //     // Set logged in status
+        //     localStorage.setItem('isLoggedIn', 'true');
+
+        //     //set loginStatus
+        //     localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userId: user.userId, role: user.role }));
+        //     // Redirect to Home page after successful login and refresh the navbar
+        //     window.location.href = '/';
+        // } else {
+        //     localStorage.setItem('isLoggedIn', 'false');
+        //     setModalMessage('Invalid credentials');
+        //     setIsModalOpen(true);
+        // }
+
+
     };
 
     const closeModal = () => {

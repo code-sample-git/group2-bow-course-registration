@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import programData from '../data/programData'; // Import the program data
 import './Signup.css'; // Import the CSS file
 import { validateEmail, validatePhone, validateName, validateBirthday, validatePassword } from './functionLib';
@@ -23,6 +23,7 @@ const Signup = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [redirectTo, setRedirectTo] = useState('');
+  const navigate = useNavigate();
 
   
   useEffect(() => {
@@ -37,7 +38,7 @@ const Signup = () => {
     return () => picker.destroy();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateEmail(email)) {
@@ -76,54 +77,99 @@ const Signup = () => {
       return;
     }
 
-    //Check if any student already exists with the same email or username
-    const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-    const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-    const emailExists = studentInfo.find((student) => student.email === email);
-    const usernameExists = userCredentials.find((user) => user.username === username);
-    if (emailExists) {
-      setModalMessage('Email already exists');
-      setIsModalOpen(true);
-      return;
-    }
-    if (usernameExists) {
-      setModalMessage('Username already exists');
-      setIsModalOpen(true);
-      return;
-    }
-
-    //All basic validation passed. Create a 6 digit unqiue Student ID. Create the studentInfo in the localstorage. And Create the userCredential in the localstorage.
-    const studentId = Math.floor(100000 + Math.random() * 900000);
-    const student = {
-      studentId,
-      firstName,
-      lastName,
-      email,
-      phone,
-      birthday,
-      department,
-      program,
+    // Prepare signup data
+    const signupData = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      phone: phone,
+      birthday: birthday,
+      department: department,
+      program: program,
+      username: username,
+      password: password
     };
-    studentInfo.push(student);
-    const newUser = {
-      userId: studentId,
-      username,
-      password,
-      role: 'student',
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signupData),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+          setModalMessage('Signup successful! Your student ID is ' + data.studentId + '. Now you can login with your Username/Email/Student ID and password.');
+          setRedirectTo('/login');
+          setIsModalOpen(true);
+      } else {
+          setModalMessage(data.message || 'Error signing up.');
+          setIsModalOpen(true);
+      }
+  } catch (error) {
+      setModalMessage('Error signing up. Please try again.');
+      setIsModalOpen(true);
+  }
+};
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+      if (redirectTo) {
+          navigate(redirectTo);
+      }
     };
-    userCredentials.push(newUser);
-    localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
-    localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
 
-    // Add your form submission logic here
-    setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your Username/Email/Student ID and password.');
-    setRedirectTo('/login');
-    setIsModalOpen(true);
-  };
+  //   //Check if any student already exists with the same email or username
+  //   const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
+  //   const userCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+  //   const emailExists = studentInfo.find((student) => student.email === email);
+  //   const usernameExists = userCredentials.find((user) => user.username === username);
+  //   if (emailExists) {
+  //     setModalMessage('Email already exists');
+  //     setIsModalOpen(true);
+  //     return;
+  //   }
+  //   if (usernameExists) {
+  //     setModalMessage('Username already exists');
+  //     setIsModalOpen(true);
+  //     return;
+  //   }
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  //   //All basic validation passed. Create a 6 digit unqiue Student ID. Create the studentInfo in the localstorage. And Create the userCredential in the localstorage.
+  //   const studentId = Math.floor(100000 + Math.random() * 900000);
+  //   const student = {
+  //     studentId,
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     phone,
+  //     birthday,
+  //     department,
+  //     program,
+  //   };
+  //   studentInfo.push(student);
+  //   const newUser = {
+  //     userId: studentId,
+  //     username,
+  //     password,
+  //     role: 'student',
+  //   };
+  //   userCredentials.push(newUser);
+  //   localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+  //   localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+
+  //   // Add your form submission logic here
+  //   setModalMessage('Signup successful! Your student ID is ' + studentId + '. Now you can login with your Username/Email/Student ID and password.');
+  //   setRedirectTo('/login');
+  //   setIsModalOpen(true);
+  // };
+
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   return (
     <div className="signup-container">

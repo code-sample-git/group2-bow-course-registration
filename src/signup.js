@@ -10,8 +10,29 @@ const Signup = () => {
         const password = event.target[2].value;
         const status = event.target[3].value; // 'admin' or 'student'
 
-        userCredentials.push({ firstName, lastName, password, status });
-        localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+        // userCredentials.push({ firstName, lastName, password, status });
+        // localStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+    };
+
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signupData),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 201) {
+                alert('Signup successful!');
+            } else {
+                alert(data.message || 'Error signing up.');
+            }
+        } catch (error) {
+            alert('Error signing up. Please try again.');
+        }
     };
 
     return (
