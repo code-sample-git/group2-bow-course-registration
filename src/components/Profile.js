@@ -30,7 +30,7 @@ const Profile = () => {
       if(role === 'student'){
         //Get student data from local storage by userId
         const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-        const student = studentInfo.find((student) => student.studentId === Number(user.userId));
+        const student = studentInfo;
         if (student) {
           student.role = role;
           setLoggedInUser(student);
@@ -65,14 +65,36 @@ const Profile = () => {
     //Update data in local storage
     if (loggedInUser.role === 'student') {
       const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-      const index = studentInfo.findIndex((student) => student.studentId === loggedInUser.studentId);
-      studentInfo[index] = editData;
+      console.log('studentInfo', studentInfo);
+      console.log("studentInfo type:", typeof studentInfo);
+
+      studentInfo.forEach((student) => {
+        if (student.studentId === loggedInUser.studentId) {
+          student.firstName = editData.firstName;
+          student.lastName = editData.lastName;
+          student.password = editData.password;
+          student.studentId = editData.studentId;
+          student.department = editData.department;
+          student.program = editData.program;
+          student.phone = editData.phone;
+          student.email = editData.email;
+        }
+      });
+
       localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
       setLoggedInUser(editData);
     } else {
       const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-      const index = studentInfo.findIndex((student) => student.studentId === editData.studentId);
-      studentInfo[index] = editData;
+      studentInfo.forEach((student) => {
+        student.firstName = editData.firstName;
+        student.lastName = editData.lastName;
+        student.password = editData.password;
+        student.studentId = editData.studentId;
+        student.department = editData.department;
+        student.program = editData.program;
+        student.phone = editData.phone;
+        student.email = editData.email;
+      });
       localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
       setUserDetails(studentInfo);
     }

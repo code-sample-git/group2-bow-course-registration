@@ -22,11 +22,13 @@ const Navbar = () => {
   };
 
   const loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
+
   const isLoggedIn = loginStatus?.status === 'login' ? true : false;
   if (isLoggedIn) {
     if (loginStatus?.role === 'student') {
       const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
-      const student = studentInfo.find((student) => student.studentId === loginStatus.userId);
+
+      const student = studentInfo;
       var firstName = student.firstName;
       var lastName = student.lastName;
     }

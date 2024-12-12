@@ -31,17 +31,33 @@ const Login = () => {
 
             const data = await response.json();
 
+            
+
+            let user = data;
+            console.log(user);
+
             if (response.status === 200) {
                 // Store the JWT token in localStorage or sessionStorage
                 localStorage.setItem('token', data.token);
                 alert('Login successful!');
+                localStorage.setItem('isLoggedIn', 'true');
+                //set loginStatus
+                localStorage.setItem('loginStatus', JSON.stringify({ status: 'login', userId: user.id, role: user.role }));
+                localStorage.setItem('studentInfo', JSON.stringify({studentId: user.id, firstName: user.first_name, lastName: user.last_name, email: user.email, phone: user.phone, birthday: user.birthday, department: user.department, program: user.program}));
+
                 navigate('/');
             } else {
+                localStorage.setItem('isLoggedIn', 'false');
                 setModalMessage(data.message || 'Invalid credentials');
                 setIsModalOpen(true);
             }
         } catch (error) {
-            setModalMessage('Error logging in. Please try again.');
+            // how to display error message if an error occurs
+            setModalMessage(error.message);
+
+
+            // setModalMessage('Error logging in. Please try again.');
+            localStorage.setItem('isLoggedIn', 'false');
             setIsModalOpen(true);
         }
 

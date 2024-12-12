@@ -87,7 +87,8 @@ const Signup = () => {
       department: department,
       program: program,
       username: username,
-      password: password
+      password: password,
+      role: 'student'
     };
 
     try {
