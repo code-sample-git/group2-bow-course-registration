@@ -46,6 +46,7 @@ const Login = () => {
                 localStorage.setItem('studentInfo', JSON.stringify({studentId: user.id, firstName: user.first_name, lastName: user.last_name, email: user.email, phone: user.phone, birthday: user.birthday, department: user.department, program: user.program}));
 
                 navigate('/');
+                window.location.href = '/';
             } else {
                 localStorage.setItem('isLoggedIn', 'false');
                 setModalMessage(data.message || 'Invalid credentials');

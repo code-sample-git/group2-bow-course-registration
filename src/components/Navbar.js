@@ -45,6 +45,7 @@ const Navbar = () => {
 
   useState(() => {
     const role = JSON.parse(localStorage.getItem('loginStatus'))?.role;
+    console.log('role', role);
     setUserRole(role);
   }, []);
 

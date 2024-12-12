@@ -68,18 +68,17 @@ const Profile = () => {
       console.log('studentInfo', studentInfo);
       console.log("studentInfo type:", typeof studentInfo);
 
-      studentInfo.forEach((student) => {
-        if (student.studentId === loggedInUser.studentId) {
-          student.firstName = editData.firstName;
-          student.lastName = editData.lastName;
-          student.password = editData.password;
-          student.studentId = editData.studentId;
-          student.department = editData.department;
-          student.program = editData.program;
-          student.phone = editData.phone;
-          student.email = editData.email;
-        }
-      });
+      if (studentInfo.studentId === loggedInUser.studentId) {
+        studentInfo.firstName = editData.firstName;
+        studentInfo.lastName = editData.lastName;
+        studentInfo.password = editData.password;
+        studentInfo.studentId = editData.studentId;
+        studentInfo.department = editData.department;
+        studentInfo.program = editData.program;
+        studentInfo.phone = editData.phone;
+        studentInfo.email = editData.email;
+      }
+
 
       localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
       setLoggedInUser(editData);
