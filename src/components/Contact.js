@@ -27,7 +27,7 @@ const Contact = () => {
       //add submitBy field to messageStorage. Need to look up the user info from the local storage (studentInfo)
       const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
       messageStorage.forEach((thread) => {
-        const student = studentInfo.find((student) => student.studentId === thread.from);
+        const student = studentInfo;
         if (student) {
           thread.submitBy = `${student.firstName} ${student.lastName}`;
         } else {
