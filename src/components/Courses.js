@@ -21,8 +21,12 @@ const Courses = () => {
 
   useEffect(() => {
     // Fetch existing courses from local storage
-    const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
-    setCourses(storedCourses);
+
+    //fetch api to get courses
+    fetch('http://localhost:5000/api/courses')
+      .then((response) => response.json())
+      .then((data) => setCourses(data))
+      .catch((error) => console.error('Error:', error));
 
     // Fetch user role from session storage
     setUserRole(user?.role || '');
@@ -31,7 +35,7 @@ const Courses = () => {
   // Function to handle course submission (Admin only)
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+
     if (!courseCode || !courseName || !term || !startDate || !endDate || !description) {
       setError('Please fill in all fields');
       setSuccess('');
@@ -79,8 +83,14 @@ const Courses = () => {
     setCourses(updatedList);
     setSuccess('Course deleted successfully!');
 
-    // Update localStorage after deletion
-    localStorage.setItem('courses', JSON.stringify(updatedList));
+    // Update by calling the API
+    fetch(`http://localhost:5000/api/courses/${id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('Success:', data))
+      .catch((error) => console.error('Error:', error));
+      
   };
 
   // Function to reset form fields
@@ -124,7 +134,13 @@ const Courses = () => {
 
   const handleTermSelection = (e) => {
     const selectedTerm = e.target.value;
-    const courses =  JSON.parse(localStorage.getItem('courses')) || [];
+    //const courses =  JSON.parse(localStorage.getItem('courses')) || [];
+    //fetch api to get courses
+    fetch('http://localhost:5000/courses')
+      .then((response) => response.json())
+      .then((data) => setCourses(data))
+      .catch((error) => console.error('Error:', error));
+
     const filteredCourses = courses.filter((course) => course.term === selectedTerm);
     setCourses(filteredCourses);
   };

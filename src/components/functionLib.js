@@ -27,6 +27,14 @@ export const validatePassword = (password) => {
 
 export const getLoggedInUser = () => {
   const user = JSON.parse(localStorage.getItem('loginStatus'));
+
+  //get token from local storage
+  const token = localStorage.getItem('token');
+
+  if(token && user){
+    user.token = token;
+  }
+
   // Ensure the user is logged in
   if (!user || user.status !== 'login') {
     return '';

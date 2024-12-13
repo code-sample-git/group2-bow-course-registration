@@ -27,22 +27,64 @@ const Profile = () => {
       //get role from loginStatus
       const role = user.role;
 
-      if(role === 'student'){
-        //Get student data from local storage by userId
-        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-        const student = studentInfo;
-        if (student) {
-          student.role = role;
-          setLoggedInUser(student);
-        } else {
-          window.location.href = '/login'; // Redirect to login if student data is not found
-        }
-      }else if(role === 'admin'){
-        //Get all student data from local storage
-        const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-        setUserDetails(studentInfo);
+      if (role === 'student') {
+        //Get student data from api
+        fetch('http://localhost:5000/api/students/profile', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data) {
+              //update the first_name and last_name to firstName and lastName
+              data.firstName = data.first_name;
+              data.lastName = data.last_name;
+              data.role = role;
+              setLoggedInUser(data);
+            } else {
+              window.location.href = '/login'; // Redirect to login if student data is not found
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            window.location.href = '/login'; // Redirect to login if student data is not found
+          });
+
+
+      } else if (role === 'admin') {
+        //fetch the api to get all student data with the auth token in header
+        fetch('http://localhost:5000/api/students/profile', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            //update the first_name and last_name to firstName and lastName
+            data.forEach((student) => {
+              student.firstName = student.first_name;
+              student.lastName = student.last_name;
+            });
+
+            //verify ifthe data is complete. if not complete filterthem out
+            data = data.filter((student) => student.firstName && student.lastName && student.studentId && student.department && student.program && student.phone && student.email);
+
+            setUserDetails(data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
+
+
+        //setUserDetails(studentInfo);
         setLoggedInUser(user);
-      }else{
+      } else {
         window.location.href = '/login'; // Redirect to login if role is not found
       }
     }
@@ -50,8 +92,8 @@ const Profile = () => {
 
   const handleEditClick = (user) => {
 
-      setIsEditing(true);
-      setEditData(user);
+    setIsEditing(true);
+    setEditData(user);
   };
 
   const handleInputChange = (e) => {
@@ -64,38 +106,67 @@ const Profile = () => {
     e.preventDefault();
     //Update data in local storage
     if (loggedInUser.role === 'student') {
-      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-      console.log('studentInfo', studentInfo);
-      console.log("studentInfo type:", typeof studentInfo);
 
-      if (studentInfo.studentId === loggedInUser.studentId) {
-        studentInfo.firstName = editData.firstName;
-        studentInfo.lastName = editData.lastName;
-        studentInfo.password = editData.password;
-        studentInfo.studentId = editData.studentId;
-        studentInfo.department = editData.department;
-        studentInfo.program = editData.program;
-        studentInfo.phone = editData.phone;
-        studentInfo.email = editData.email;
-      }
+      //create object to update student data
+      const studentData = {
+        first_name: editData.firstName,
+        last_name: editData.lastName,
+        password: editData.password,
+        studentId: editData.studentId,
+        department: editData.department,
+        program: editData.program,
+        phone: editData.phone,
+        email: editData.email
+      };
 
-
-      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+      //fetch api to update student data
+      fetch('http://localhost:5000/api/students/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(studentData)
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
       setLoggedInUser(editData);
     } else {
-      const studentInfo = JSON.parse(localStorage.getItem('studentInfo')) || [];
-      studentInfo.forEach((student) => {
-        student.firstName = editData.firstName;
-        student.lastName = editData.lastName;
-        student.password = editData.password;
-        student.studentId = editData.studentId;
-        student.department = editData.department;
-        student.program = editData.program;
-        student.phone = editData.phone;
-        student.email = editData.email;
-      });
-      localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
-      setUserDetails(studentInfo);
+      //create object to update student data
+      const studentInfo = {
+        first_name: editData.firstName,
+        last_name: editData.lastName,
+        password: editData.password,
+        studentId: editData.studentId,
+        department: editData.department,
+        program: editData.program,
+        phone: editData.phone,
+        email: editData.email
+      };
+      
+      //fetch api to update student data
+      fetch('http://localhost:5000/api/students/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(studentInfo)
+      })
+
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      setUserDetails(userDetails.map((detail) => (detail.index === editData.index ? editData : detail)));
     }
 
     setIsEditing(false);
@@ -140,7 +211,7 @@ const Profile = () => {
               </tr>
             </thead>
             <tbody>
-              
+
               {userDetails
                 .map((detail) => (
                   <tr key={detail.index}>
